@@ -8,6 +8,7 @@ class Tool{
   String? toolDate;
   String? toolState;
   String? toolLat;
+  String? toolLng;
 
   Tool(
     {required this.toolID,

@@ -73,7 +73,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      const Text("Your one-stop portal\nto rent your tools and equipments",
+                      const SizedBox(height:10),
+                      const Text("Your one-stop portal to",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,),
+                        ),
+                      const Text("rent your tools and equipments",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,),
@@ -127,6 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
+                          const SizedBox(height:10),
                           Checkbox(
                             value: _isChecked, 
                             onChanged: (bool? value) {
@@ -152,8 +159,9 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  const SizedBox(height:10),
                   const Text("Didn’t have an account?", 
-                  style: TextStyle(fontSize: 14.0)),
+                  style: TextStyle(fontSize: 16.0)),
                   GestureDetector(
                     onTap: () => {
                       Navigator.push(context, 
@@ -163,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: const Text(" Register now!",
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold
                     ),),
                   )
@@ -265,7 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     String _email = _emailEditingController.text;
     String _pass = _passEditingController.text;
-    http.post(Uri.parse("${Config.SERVER}/php/login_user.php"),
+    http.post(Uri.parse("http://10.19.23.97/toolshare_portal/php/login_user.php"),
         body: {"email": _email, "password": _pass}).then((response) {
       print(response.body);
       var jsonResponse = json.decode(response.body);

@@ -27,7 +27,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
   final focus2 = FocusNode();
   final focus3 = FocusNode();
   final focus4 = FocusNode();
-  final TextEditingController _nameEditingController = TextEditingController();
+  final TextEditingController _usernameEditingController = TextEditingController();
   final TextEditingController _emailEditingController = TextEditingController();
   final TextEditingController _phoneEditingController = TextEditingController();
   final TextEditingController _passEditingController = TextEditingController();
@@ -78,6 +78,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
                   key: _formKey,
                   child: Column(
                   children: <Widget>[
+                    const SizedBox(height:10),
                     const Text(
                       "Register New Account",
                         style: TextStyle(
@@ -85,14 +86,14 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     TextFormField(
                       textInputAction: TextInputAction.next,
                       focusNode: focus,
                       onFieldSubmitted: (v) {
                         FocusScope.of(context).requestFocus(focus);
                       },
-                      controller: _nameEditingController,
+                      controller: _usernameEditingController,
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
                       labelText: 'Username',
@@ -220,8 +221,13 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
               const Text("Already registered?",
               style: TextStyle(fontSize: 15.0, )),
               GestureDetector(
-                onTap: null,
-                child: const Text("Already registered?",
+                onTap: () => {
+                      Navigator.push(context, 
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => 
+                          const LoginScreen()))
+                    },
+                child: const Text(" Login now!",
               style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)),
               )
             ],
@@ -246,7 +252,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
   }
   
   void _registerAccountDialog() {
-    String _name = _nameEditingController.text;
+    String _username = _usernameEditingController.text;
     String _email = _emailEditingController.text;
     String _phone = _phoneEditingController.text;
     String _passa = _passEditingController.text;
@@ -300,7 +306,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                _registerUser(_name, _email, _phone, _passa);
+                _registerUser(_username, _email, _phone, _passa);
               },
             ),
             TextButton(
@@ -368,10 +374,10 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
     );
   }
 
-  void _registerUser(String name, String email, String phone, String pass) {
+  void _registerUser(String username, String email, String phone, String pass) {
     try {
-      http.post(Uri.parse("${Config.SERVER}/php/register_user.php"), body: {
-        "name": name,
+      http.post(Uri.parse("http://10.19.23.97/toolshare_portal/php/register_user.php"), body: {
+        "username": username,
         "email": email,
         "phone": phone,
         "password": pass,

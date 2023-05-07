@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,22 +14,24 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-
-class ToolList extends StatefulWidget{
+class ToolList extends StatefulWidget {
   final User user;
   const ToolList({super.key, required this.user});
-  
 
   @override
   State<StatefulWidget> createState() => _ToolListState();
 }
 
-class _ToolListState extends State<ToolList>{
+class _ToolListState extends State<ToolList> {
   var _lat, _lng;
   late Position _position;
   List<Tool> ToolList = <Tool>[];
   String titlecenter = "Loading...";
   var placemarks;
+  int _currentIndex = 2;
+    late List<Widget> tabchildren;
+  String maintitle = "Tool List";
+
   //final df DateFormat('d/MM/yyyy hh:mm a');
   late double screenHeight, screenWidth, resWidth;
   //int rowcount = 2;
@@ -41,12 +42,12 @@ class _ToolListState extends State<ToolList>{
     _loadTools();
   }
 
-@override
-void dispose() {
-  ToolList = [];
-  print("dispose");
-  super.dispose();
-}
+  @override
+  void dispose() {
+    ToolList = [];
+    print("dispose");
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,18 +57,30 @@ void dispose() {
         animatedIcon: AnimatedIcons.menu_close,
         children: [
           SpeedDialChild(
-            child: const Icon(Icons.add),
-            label: "Register New Tool",
-            labelStyle: const TextStyle(),
-            onTap: null
-          ),
+              child: const Icon(Icons.add),
+              label: "Register New Tool",
+              labelStyle: const TextStyle(),
+              onTap: null),
         ],
       ),
     );
   }
+  void _loadTools() {}
 
+  void onTabTapped(int value){
+    setState(() {
+      _currentIndex = value;
+      if (_currentIndex == 0){
+        maintitle = "Dashboard";
+      } else if (_currentIndex == 1){
+        maintitle = "Tool Marketplace";
+      } else if (_currentIndex == 2){
+        maintitle = "Tool List";
+      } else if (_currentIndex == 3){
+        maintitle = "Account";
+      }
+    });
+  }
 }
 
-void _loadTools() {
 
-}

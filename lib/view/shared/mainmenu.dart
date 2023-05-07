@@ -6,7 +6,6 @@ import '../screens/ToolList.dart';
 import '../screens/profilescreen.dart';
 import 'EnterExitRoute.dart';
 
-
 class MainMenuWidget extends StatefulWidget {
   final User user;
   const MainMenuWidget({super.key, required this.user});
@@ -24,53 +23,44 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
       child: ListView(
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text(widget.user.email.toString()), 
-            accountEmail: Text(widget.user.name.toString()),
+            accountName: Text(widget.user.email.toString()),
+            accountEmail: Text(widget.user.username.toString()),
             currentAccountPicture: const CircleAvatar(
               radius: 30.0,
             ),
-            ),
-            ListTile(
+          ),
+          ListTile(
               title: const Text('Notifications'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
-                  context, 
-                  EnterExitRoute(
-                    exitPage: DashboardScreen(user: widget.user), 
-                    enterPage: NotificationScreen(user: widget.user))
-                );
-              }
-            ),
-            ListTile(
+                    context,
+                    EnterExitRoute(
+                        exitPage: DashboardScreen(user: widget.user),
+                        enterPage: NotificationScreen(user: widget.user)));
+              }),
+          ListTile(
               title: const Text('Tool List'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
-                  context, 
-                  EnterExitRoute(
-                    exitPage: DashboardScreen(user: widget.user), 
-                    enterPage: ToolList(user: widget.user))
-                );
-              }
-            ),
-            ListTile(
+                    context,
+                    EnterExitRoute(
+                        exitPage: DashboardScreen(user: widget.user),
+                        enterPage: ToolList(user: widget.user)));
+              }),
+          ListTile(
               title: const Text('Profile'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
-                  context, 
-                  EnterExitRoute(
-                    exitPage: DashboardScreen(user: widget.user), 
-                    enterPage: ProfileScreen(user: widget.user))
-                );
-              }
-            ),
+                    context,
+                    EnterExitRoute(
+                        exitPage: DashboardScreen(user: widget.user),
+                        enterPage: ProfileScreen(user: widget.user)));
+              }),
         ],
       ),
     );
   }
-
 }
-
-
