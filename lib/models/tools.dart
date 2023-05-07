@@ -7,6 +7,7 @@ class Tool{
   String? toolDescription;
   String? toolDate;
   String? toolState;
+  String? toolLat;
 
   Tool(
     {required this.toolID,
@@ -16,8 +17,8 @@ class Tool{
     required this.toolRentPrice,
     required this.toolDescription,
     required this.toolDate,
-    required this.toolState}
-  );
+    required this.toolState,
+    required this.toolLat});
 
   Tool.fromJson(Map<String, dynamic> json) {
     toolID = json['toolID'];
