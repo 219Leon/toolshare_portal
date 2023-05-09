@@ -3,17 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:toolshare_portal/models/tools.dart';
 import 'package:toolshare_portal/view/screens/ToolList.dart';
+import 'package:toolshare_portal/view/screens/MarketplaceScreen.dart';
 import '../../models/user.dart';
+import '../../models/tools.dart';
+import 'package:toolshare_portal/config.dart';
 import '../shared/mainmenu.dart';
 import 'package:http/http.dart' as http;
 import 'package:ndialog/ndialog.dart';
-import '../screens/MarketplaceScreen.dart';
 import '../screens/ProfileScreen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class DashboardScreen extends StatefulWidget {
   final User user;
-  const DashboardScreen({super.key, required this.user});
+  final Tool tool;
+  const DashboardScreen({super.key, required this.user, required this.tool});
 
   @override
   State<DashboardScreen> createState() => _dashboardScreenState();
@@ -29,6 +33,7 @@ class _dashboardScreenState extends State<DashboardScreen> {
   String search = "all";
   var renter;
   var color;
+  var val = 50;  
   var numofpage, curpage = 1;
   int numberofresult = 0;
   late List<Widget> tabchildren;
@@ -44,11 +49,14 @@ class _dashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    tabchildren = const [
-      DashboardScreen(),
-      MarketplaceScreen(),
-      ToolList(user: null),
-      ProfileScreen(user: null),
+    tabchildren = [
+      DashboardScreen(
+        user: widget.user,
+        tool: widget.tool,
+      ),
+      MarketplaceScreen(user: widget.user, tool: widget.tool),
+      ToolList(user: widget.user, tool: widget.tool),
+      ProfileScreen(user: widget.user),
     ];
   }
 
@@ -69,11 +77,27 @@ class _dashboardScreenState extends State<DashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.blue)),
+              decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
               child: Row(
                 children: [
-
+                  Flexible(
+                    flex: 4,
+                    child: SizedBox(
+                      height: screenHeight * 0.25,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              "${Config.SERVER}/assets/profileimages/${widget.user.id}.png?v=$val",
+                          placeholder: (context, url) =>
+                              const LinearProgressIndicator(),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.image_not_supported, size: 128),
+                        ),
+                      ),
+                    ),
+                  ),
+                  
                 ],
               ),
             ),
@@ -104,39 +128,31 @@ class _dashboardScreenState extends State<DashboardScreen> {
           onTap: onTabTapped,
           type: BottomNavigationBarType.fixed,
           currentIndex: _currentIndex,
-          items: const[
+          items: const [
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.house),
-              label: "Dashboard"),
+                icon: Icon(Icons.house), label: "Dashboard"),
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.store_mall_directory),
-              label: "Tool Marketplace"),
+                icon: Icon(Icons.store_mall_directory),
+                label: "Tool Marketplace"),
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.list_alt),
-              label: "Tool List"),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person),
-              label: "Account"),  
+                icon: Icon(Icons.list_alt), label: "Tool List"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Account"),
           ],
         ),
-        
       ),
     );
   }
-  void onTabTapped(int value){
+
+  void onTabTapped(int value) {
     setState(() {
       _currentIndex = value;
-      if (_currentIndex == 0){
+      if (_currentIndex == 0) {
         maintitle = "Dashboard";
-      } else if (_currentIndex == 1){
+      } else if (_currentIndex == 1) {
         maintitle = "Tool Marketplace";
-      } else if (_currentIndex == 2){
+      } else if (_currentIndex == 2) {
         maintitle = "Tool List";
-      } else if (_currentIndex == 3){
+      } else if (_currentIndex == 3) {
         maintitle = "Account";
       }
     });
