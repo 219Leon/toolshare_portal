@@ -9,14 +9,18 @@ import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:toolshare_portal/config.dart';
 import 'package:toolshare_portal/models/user.dart';
+import 'package:toolshare_portal/models/tools.dart';
+import '../shared/mainmenu.dart';
 
 class RegisterToolScreen extends StatefulWidget {
   final User user;
+  final Tool tool;
   final Position position;
   final List<Placemark> placemarks;
   const RegisterToolScreen(
       {super.key,
       required this.user,
+      required this.tool,
       required this.position,
       required this.placemarks});
 
@@ -248,7 +252,9 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
           ),
         ],
       )),
+      drawer: MainMenuWidget(user: widget.user, tool: widget.tool,),
     );
+    
   }
 
   void _newToolDialog() {

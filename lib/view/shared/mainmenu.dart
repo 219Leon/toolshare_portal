@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:toolshare_portal/view/screens/MarketplaceScreen.dart';
+import 'package:toolshare_portal/view/screens/RentPayment.dart';
 import '../../models/user.dart';
+import '../../models/tools.dart';
 import '../screens/DashboardScreen.dart';
-import '../screens/NotificationScreen.dart';
+import '../screens/detailscreen.dart';
 import '../screens/ToolList.dart';
 import '../screens/profilescreen.dart';
 import 'EnterExitRoute.dart';
 
 class MainMenuWidget extends StatefulWidget {
   final User user;
-  const MainMenuWidget({super.key, required this.user});
+  final Tool tool;
+  const MainMenuWidget({super.key, required this.user, required this.tool});
 
   @override
   State<MainMenuWidget> createState() => _MainMenuWidgetState();
@@ -30,15 +34,54 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
             ),
           ),
           ListTile(
-              title: const Text('Notifications'),
+              title: const Text('Dashboard'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                     context,
                     EnterExitRoute(
-                        exitPage: DashboardScreen(user: widget.user),
-                        enterPage: NotificationScreen(user: widget.user)));
+                        exitPage: DashboardScreen(
+                          user: widget.user,
+                          tool: widget.tool,
+                        ),
+                        enterPage: DashboardScreen(
+                          user: widget.user,
+                          tool: widget.tool,
+                        )));
               }),
+                    ListTile(
+              title: const Text('Tool Marketplace'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    EnterExitRoute(
+                        exitPage: DashboardScreen(
+                          user: widget.user,
+                          tool: widget.tool,
+                        ),
+                        enterPage: MarketplaceScreen(
+                          user: widget.user,
+                          tool: widget.tool,
+                        )));
+              }),
+                    ListTile(
+              title: const Text('Rent Payment'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    EnterExitRoute(
+                        exitPage: DashboardScreen(
+                          user: widget.user,
+                          tool: widget.tool,
+                        ),
+                        enterPage: RentPayment(
+                          user: widget.user,
+                          renter: widget.user,
+                          tool: widget.tool,
+                        )));
+              }),          
           ListTile(
               title: const Text('Tool List'),
               onTap: () {
@@ -46,8 +89,14 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                 Navigator.push(
                     context,
                     EnterExitRoute(
-                        exitPage: DashboardScreen(user: widget.user),
-                        enterPage: ToolList(user: widget.user)));
+                        exitPage: DashboardScreen(
+                          user: widget.user,
+                          tool: widget.tool,
+                        ),
+                        enterPage: ToolList(
+                          user: widget.user,
+                          tool: widget.tool,
+                        )));
               }),
           ListTile(
               title: const Text('Profile'),
@@ -56,8 +105,14 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                 Navigator.push(
                     context,
                     EnterExitRoute(
-                        exitPage: DashboardScreen(user: widget.user),
-                        enterPage: ProfileScreen(user: widget.user)));
+                        exitPage: DashboardScreen(
+                          user: widget.user,
+                          tool: widget.tool,
+                        ),
+                        enterPage: ProfileScreen(
+                          user: widget.user,
+                          tool: widget.tool,
+                        )));
               }),
         ],
       ),

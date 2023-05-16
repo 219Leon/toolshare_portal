@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:toolshare_portal/view/screens/LoginScreen.dart';
-
 import '../../config.dart';
 
 class RegisterAccountScreen extends StatefulWidget{
@@ -22,11 +21,6 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
     loadEula();
   }
 
-  final focus = FocusNode();
-  final focus1 = FocusNode();
-  final focus2 = FocusNode();
-  final focus3 = FocusNode();
-  final focus4 = FocusNode();
   final TextEditingController _usernameEditingController = TextEditingController();
   final TextEditingController _emailEditingController = TextEditingController();
   final TextEditingController _phoneEditingController = TextEditingController();
@@ -37,6 +31,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
   bool _passwordVisible = true;
   final _formKey = GlobalKey<FormState>();
   String eula = "";
+
   late double screenHeight, screenWidth, resWidth;
 
   @override
@@ -86,13 +81,12 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 15),
                     TextFormField(
                       textInputAction: TextInputAction.next,
-                      focusNode: focus,
-                      onFieldSubmitted: (v) {
-                        FocusScope.of(context).requestFocus(focus);
-                      },
+                      validator: (val) => val!.isEmpty || val.length<3
+                      ? "Please enter a valid username!"
+                      : null,
                       controller: _usernameEditingController,
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
@@ -108,12 +102,8 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
                       validator: (val) => val!.isEmpty ||
                               !val.contains("@") ||
                               !val.contains(".")
-                              ? "enter a valid email"
+                              ? "Please enter a valid email!"
                               : null,
-                      focusNode: focus1,
-                      onFieldSubmitted: (v) {
-                        FocusScope.of(context).requestFocus(focus1);
-                      },
                       controller: _emailEditingController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
@@ -126,10 +116,9 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
                     ))),
                     TextFormField(
                       textInputAction: TextInputAction.next,
-                      focusNode: focus2,
-                      onFieldSubmitted: (v) {
-                        FocusScope.of(context).requestFocus(focus2);
-                      },
+                      validator: (val) => val!.isEmpty||val.length<10
+                      ?"Please enter a valid phone number!"
+                      :null,
                       controller: _phoneEditingController,
                       keyboardType: TextInputType.phone,
                       decoration: const InputDecoration(
@@ -143,10 +132,6 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
                     TextFormField(
                       textInputAction: TextInputAction.next,
                       validator: (val) => validatePassword(val.toString()),
-                      focusNode: focus3,
-                      onFieldSubmitted: (v) {
-                        FocusScope.of(context).requestFocus(focus2);
-                      },
                       controller: _passEditingController,
                       keyboardType: TextInputType.visiblePassword,
                       decoration: const InputDecoration(
@@ -161,10 +146,6 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
                     TextFormField(
                       textInputAction: TextInputAction.done,
                       validator: (val) => validatePassword(val.toString()),
-                      focusNode: focus4,
-                      onFieldSubmitted: (v) {
-                        FocusScope.of(context).requestFocus(focus2);
-                      },
                       controller: _pass2EditingController,
                       keyboardType: TextInputType.visiblePassword,
                       decoration: const InputDecoration(
@@ -190,7 +171,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
                         }),
                       Flexible(
                         child: GestureDetector(
-                          onTap: null,
+                          onTap: showEula,
                           child: const Text("I agree with the terms stated",
                           style: TextStyle(
                             fontSize: 16,
@@ -204,6 +185,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
                         height: 50,
                         child: const Text('Register'),
                         elevation: 10,
+                        color: Colors.blue,
                         onPressed: _registerAccountDialog
                         ),    
                     ],
@@ -244,7 +226,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
       return 'Please enter password';
     } else {
       if (!regex.hasMatch(value)) {
-        return 'Please enter a valid password';
+        return 'Please enter a valid password!';
       } else {
         return null;
       }
@@ -286,7 +268,6 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
       return;
     }
 
-    //If everything good proceed with dialog
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -374,10 +355,10 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
     );
   }
 
-  void _registerUser(String username, String email, String phone, String pass) {
+  void _registerUser(String name, String email, String phone, String pass) {
     try {
-      http.post(Uri.parse("http://10.19.23.97/toolshare_portal/php/register_user.php"), body: {
-        "username": username,
+      http.post(Uri.parse("${Config.SERVER}/toolshare_portal/php/register_user.php"), body: {
+        "name": name,
         "email": email,
         "phone": phone,
         "password": pass,
@@ -386,21 +367,21 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
         var data = jsonDecode(response.body);
         if (response.statusCode == 200 && data['status'] == "success") {
           Fluttertoast.showToast(
-              msg: "Success. Please login",
+              msg: "Registration successful. Please login",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
-               Navigator.push(context,
-            MaterialPageRoute(builder: (content) => const LoginScreen()));
+          print("Register success");  
           return;
         } else {
           Fluttertoast.showToast(
-              msg: "Failed",
+              msg: "Registration Failed",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
+          print("Register failed"); 
           return;
         }
       });

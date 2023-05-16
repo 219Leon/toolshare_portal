@@ -3,10 +3,13 @@ class Tool{
   String? userID;
   String? toolName;
   String? toolCategory;
+  String? toolQty;
   String? toolRentPrice;
+  String? toolDelivery;
   String? toolDescription;
   String? toolDate;
   String? toolState;
+  String? toolLocal;
   String? toolLat;
   String? toolLng;
 
@@ -14,12 +17,16 @@ class Tool{
     {required this.toolID,
     required this.userID,
     required this.toolName,
-    required this.toolCategory,    
+    required this.toolCategory,
+    required this.toolQty,    
     required this.toolRentPrice,
+    required this.toolDelivery,
     required this.toolDescription,
     required this.toolDate,
     required this.toolState,
-    required this.toolLat});
+    required this.toolLocal,
+    required this.toolLat,
+    required this.toolLng});
 
   Tool.fromJson(Map<String, dynamic> json) {
     toolID = json['toolID'];
@@ -30,6 +37,7 @@ class Tool{
     toolDescription = json['toolDescription'];  
     toolDate = json['toolDate']; 
     toolState = json['toolState']; 
+    toolQty = json['toolQuantity'];
   }
   
   Map<String, dynamic> toJson() {

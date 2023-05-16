@@ -6,10 +6,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../models/user.dart';
+import '../../models/tools.dart';
 import 'package:toolshare_portal/config.dart';
 import '../screens/LoginScreen.dart';
 import '../screens/DashboardScreen.dart';
-import '../screens/RegisterAccountScreen.dart';
+import '../screens/MarketplaceScreen.dart';
+import '../screens/ToolList.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +21,8 @@ import 'package:http/http.dart' as http;
 
 class ProfileScreen extends StatefulWidget {
   final User user;
-  const ProfileScreen({super.key, required this.user});
+  final Tool tool;
+  const ProfileScreen({super.key, required this.user, required this.tool});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -28,7 +31,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late double screenHeight, screenWidth, resWidth;
   File? _image;
-  var pathAsset = "assets/images/profile.png";
+  var pathAsset = "/assets/images/profile.jpg";
   final df = DateFormat('dd/MM/yyyy');
   var val = 50;
 
@@ -44,9 +47,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Random random = Random();
 
+  late List<Widget> tabchildren;
+  int _currentIndex = 3;
+  String maintitle = "Dashboard";
+
   @override
   void initState() {
     super.initState();
+    tabchildren = [
+      DashboardScreen(user: widget.user, tool: widget.tool),
+      MarketplaceScreen(user: widget.user, tool: widget.tool),
+      ToolList(user: widget.user, tool: widget.tool),
+      ProfileScreen(user: widget.user, tool: widget.tool),
+    ];
   }
 
   @override
@@ -80,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               child: CachedNetworkImage(
                                 imageUrl:
-                                    "${Config.SERVER}/assets/profileimages/${widget.user.id}.png?v=$val",
+                                    "${Config.SERVER}toolshare_portal/assets/profileimages/${widget.user.id}.jpg?v=$val",
                                 placeholder: (context, url) =>
                                     const LinearProgressIndicator(),
                                 errorWidget: (context, url, error) =>
@@ -169,18 +182,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   isDisable ? null : _updateUsernameDialog,
                               child: const Text("UPDATE USERNAME"),
                             ),
-                            MaterialButton(
-                              onPressed: isDisable ? null : _updatePhoneDialog,
-                              child: const Text("UPDATE PHONE"),
+                            const Divider(
+                              height: 2,
                             ),
                             MaterialButton(
                               onPressed: isDisable ? null : _changePassDialog,
                               child: const Text("UPDATE PASSWORD"),
                             ),
+                            const Divider(
+                              height: 2,
+                            ),
+                            MaterialButton(
+                              onPressed: isDisable ? null : _updatePhoneDialog,
+                              child: const Text("UPDATE PHONE"),
+                            ),
+                            const Divider(
+                              height: 2,
+                            ),
+                            MaterialButton(
+                              onPressed: isDisable ? null : _updateAddressDialog,
+                              child: const Text("UPDATE ADDRESS"),
+                            ),
+                            const Divider(
+                              height: 2,
+                            ),
                             MaterialButton(
                               onPressed:
                                   isDisable ? null : _updateFinanceDialog,
                               child: const Text("UPDATE FINANCIAL DETAILS"),
+                            ),
+                            const Divider(
+                              height: 2,
                             ),
                             MaterialButton(
                               onPressed: isDisable ? null : _logoutDialog,
@@ -191,7 +223,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 )),
           ]),
-          drawer: MainMenuWidget(user: widget.user)),
+                    bottomNavigationBar: BottomNavigationBar(
+            onTap: onTabTapped,
+            type: BottomNavigationBarType.fixed,
+            currentIndex: _currentIndex,
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.house), label: "Dashboard",),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.store_mall_directory),
+                  label: "Marketplace"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.list_alt), label: "Tool List"),
+              BottomNavigationBarItem(icon: Icon(Icons.person), label: "Account"),
+            ],
+          ),
+          drawer: MainMenuWidget(
+            user: widget.user,
+            tool: widget.tool,
+          )),
     );
   }
 
@@ -439,6 +489,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  void _updateAddressDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Change Address?",
+            style: TextStyle(),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                minLines: 6,
+                maxLines: 6,
+                controller: _addressController,
+                decoration: InputDecoration(
+                    labelText: 'Home Address',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0))),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your home address';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   _updateFinanceDialog() {
     showDialog(
       context: context,
@@ -508,9 +615,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void updateFinance(){
-
-  }
+  void updateFinance() {}
 
   _updateImageDialog() {
     showDialog(
@@ -672,5 +777,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       },
     );
+  }
+
+  void onTabTapped(int value) {
+    setState(() {
+      _currentIndex = value;
+      if (_currentIndex == 0) {
+        maintitle = "Dashboard";
+      } else if (_currentIndex == 1) {
+        maintitle = "Tool Marketplace";
+      } else if (_currentIndex == 2) {
+        maintitle = "Tool List";
+      } else if (_currentIndex == 3) {
+        maintitle = "Account";
+      }
+    });
   }
 }
