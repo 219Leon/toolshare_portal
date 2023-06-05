@@ -54,13 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    tabchildren = [
-      DashboardScreen(user: widget.user, tool: widget.tool),
-      MarketplaceScreen(user: widget.user, tool: widget.tool),
-      ToolList(user: widget.user, tool: widget.tool),
-      ProfileScreen(user: widget.user, tool: widget.tool),
-    ];
-  }
+      }
 
   @override
   Widget build(BuildContext context) {
