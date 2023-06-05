@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:toolshare_portal/view/screens/DashboardScreen.dart';
+import 'package:toolshare_portal/view/screens/HomeScreen.dart';
 import 'package:toolshare_portal/view/screens/RegisterAccountScreen.dart';
 
 import '../../config.dart';
 import '../../models/user.dart';
+import '../../models/tools.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,9 +21,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailEditingController = TextEditingController();
   final TextEditingController _passEditingController = TextEditingController();
-  final focus = FocusNode();
-  final focus1 = FocusNode();
-  final focus2 = FocusNode();
 
   final _formKey = GlobalKey<FormState>();
   bool _isChecked = false;
@@ -90,12 +88,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         validator: (val) => val!.isEmpty ||
                               !val.contains("@") ||
                               !val.contains(".")
-                              ? "enter a valid email"
+                              ? "Enter a valid email!"
                               : null,
-                        focusNode: focus,
-                        onFieldSubmitted: (v){
-                          FocusScope.of(context).requestFocus(focus1);
-                        },
                         controller: _emailEditingController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
@@ -112,10 +106,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextFormField(
                         textInputAction: TextInputAction.done,
                         validator: (val) => validatePassword(val.toString()),
-                        focusNode: focus1,
-                        onFieldSubmitted: (v){
-                          FocusScope.of(context).requestFocus(focus1);
-                        },
                         controller: _passEditingController,
                         keyboardType: TextInputType.visiblePassword,
                         decoration: const InputDecoration(
@@ -130,6 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         obscureText: true,
                       ),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -151,6 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 50,
                             child: const Text('Login'),
                             elevation: 10,
+                            color: Colors.blue,
                             onPressed: _loginUser)
                         ],
                       ),
@@ -273,16 +265,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
     String _email = _emailEditingController.text;
     String _pass = _passEditingController.text;
-    http.post(Uri.parse("http://10.19.23.97/toolshare_portal/php/login_user.php"),
-        body: {"email": _email, "password": _pass}).then((response) {
+    http.post(Uri.parse('${Config.SERVER}/php/login_user.php'),
+        body: {'email': _email, 'password': _pass}).then((response) {
+          print(_email);
+          print(_pass);
       print(response.body);
       var jsonResponse = json.decode(response.body);
       if (response.statusCode == 200 && jsonResponse['status'] == "success") {
         print(jsonResponse);
         User user = User.fromJson(jsonResponse['data']);
+        Tool tool  = Tool.fromJson(jsonResponse['data']);
         print(user.phone);
         Navigator.push(context,
-            MaterialPageRoute(builder: (content) => DashboardScreen(user: user)));
+            MaterialPageRoute(builder: (content) => HomePage(user: user, tool:tool, selectedIndex: 0,)));
+      } else if (response.statusCode != 200){
+        Fluttertoast.showToast(
+            msg: "Login Failed. No response.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
       } else {
         Fluttertoast.showToast(
             msg: "Login Failed",
@@ -297,10 +299,10 @@ class _LoginScreenState extends State<LoginScreen> {
     String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$';
     RegExp regex = RegExp(pattern);
     if (value.isEmpty) {
-      return 'Please enter password';
+      return 'Please enter password!';
     } else {
       if (!regex.hasMatch(value)) {
-        return 'Enter valid password';
+        return 'Enter valid password!';
       } else {
         return null;
       }

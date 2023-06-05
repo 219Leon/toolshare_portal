@@ -8,9 +8,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:toolshare_portal/config.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:toolshare_portal/view/screens/detailscreen.dart';
-import '../screens/ProfileScreen.dart';
-import 'package:toolshare_portal/view/screens/DashboardScreen.dart';
-import 'package:toolshare_portal/view/screens/MarketplaceScreen.dart';
 import 'package:toolshare_portal/models/tools.dart';
 import 'package:toolshare_portal/view/screens/RegisterToolScreen.dart';
 import '../../models/user.dart';
@@ -22,7 +19,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 class ToolList extends StatefulWidget {
   final User user;
   final Tool tool;
-  const ToolList({super.key, required this.user, required this.tool});
+  final int selectedIndex;
+  const ToolList(
+      {super.key,
+      required this.user,
+      required this.tool,
+      required this.selectedIndex});
 
   @override
   State<StatefulWidget> createState() => _ToolListState();
@@ -35,11 +37,6 @@ class _ToolListState extends State<ToolList> {
   String titlecenter = "Loading...";
   var placemarks;
   final df = DateFormat('dd/MM/yyyy hh:mm a');
-  int _currentIndex = 2;
-  late List<Widget> tabchildren;
-  String maintitle = "Tool List";
-
-  //final df DateFormat('d/MM/yyyy hh:mm a');
   late double screenHeight, screenWidth, resWidth;
   int rowcount = 2;
 
@@ -47,12 +44,6 @@ class _ToolListState extends State<ToolList> {
   void initState() {
     super.initState();
     _loadTools();
-    tabchildren = [
-      DashboardScreen(user: widget.user, tool: widget.tool),
-      MarketplaceScreen(user: widget.user, tool: widget.tool),
-      ToolList(user: widget.user, tool: widget.tool),
-      ProfileScreen(user: widget.user, tool: widget.tool),
-    ];
   }
 
   @override
@@ -76,26 +67,9 @@ class _ToolListState extends State<ToolList> {
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
-          appBar: AppBar(actions: [
-            PopupMenuButton(
-              itemBuilder: (context) {
-                return [
-                  const PopupMenuItem<int>(
-                    value: 0,
-                    child: Text("Add new Tools"),
-                  ),
-                  const PopupMenuItem(value: 1, child: Text("My Reservations"))
-                ];
-              },
-              onSelected: ((value) {
-                if (value == 0) {
-                  _gotoNewTool();
-                } else if (value == 1) {
-                  _gotoReservationList();
-                }
-              }),
-            )
-          ]),
+          appBar: AppBar(
+            title: const Text("Tool List"),
+          ),
           body: toolList.isEmpty
               ? Center(
                   child: Text(
@@ -121,6 +95,7 @@ class _ToolListState extends State<ToolList> {
                         child: GridView.count(
                       crossAxisCount: rowcount,
                       children: List.generate(toolList.length, (index) {
+                        print(toolList);
                         return Card(
                           elevation: 8,
                           child: InkWell(
@@ -138,10 +113,10 @@ class _ToolListState extends State<ToolList> {
                                 Flexible(
                                     flex: 6,
                                     child: CachedNetworkImage(
-                                      width: resWidth / 2,
+                                      width: resWidth,
                                       fit: BoxFit.cover,
                                       imageUrl:
-                                          "{Config.SERVER}/assets/toolimages/${toolList[index].toolID}.png",
+                                          "${Config.SERVER}/assets/toolimages/${toolList[index].toolId}.png",
                                       placeholder: (context, url) =>
                                           const LinearProgressIndicator(),
                                       errorWidget: (context, url, error) =>
@@ -180,26 +155,11 @@ class _ToolListState extends State<ToolList> {
                     ))
                   ],
                 ),
-          bottomNavigationBar: BottomNavigationBar(
-            onTap: onTabTapped,
-            type: BottomNavigationBarType.fixed,
-            currentIndex: _currentIndex,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.house),
-                label: "Dashboard",
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.store_mall_directory), label: "Marketplace"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.list_alt), label: "Tool List"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.person), label: "Account"),
-            ],
-          ),
-          drawer: MainMenuWidget(
-            user: widget.user,
-            tool: widget.tool,
+          drawer: MainMenuWidget(user: widget.user, tool: widget.tool),
+          floatingActionButton: FloatingActionButton(
+            onPressed: _gotoNewTool,
+            tooltip: 'Add new tool',
+            child: const Icon(Icons.add_rounded),
           ),
         ));
   }
@@ -238,14 +198,6 @@ class _ToolListState extends State<ToolList> {
           timeInSecForIosWeb: 1,
           fontSize: 14);
     }
-  }
-
-  Future<void> _gotoReservationList() async {
-    ProgressDialog progressDialog = ProgressDialog(context,
-        blur: 10,
-        title: null,
-        message: const Text("Navigating to your reservation list..."));
-    progressDialog.show();
   }
 
   Future<bool> _checkPermissionGetLoc() async {
@@ -298,36 +250,42 @@ class _ToolListState extends State<ToolList> {
   }
 
   void _loadTools() {
-    http
-        .get(
-      Uri.parse(
-          "${Config.SERVER}/php/loadrentertools.php?userid=${widget.user.id}"),
-    )
-        .then((response) {
-      if (response.statusCode == 200) {
-        var jsondata = jsonDecode(response.body);
-        if (jsondata['status'] == 'success') {
-          var extractdata = jsondata['data'];
-          if (extractdata['tools'] != null) {
-            toolList = <Tool>[];
-            extractdata['tools'].forEach((v) {
-              toolList.add(Tool.fromJson(v));
-            });
+    
+  http.get(
+    Uri.parse("${Config.SERVER}/php/loadrentertools.php?userid=${widget.user.id}"),
+  ).then((response) {
+    if (response.statusCode == 200) {
+      var jsondata = jsonDecode(response.body);
+      if (jsondata['status'] == 'success') {
+        var extractdata = jsondata['data'];
+        if (extractdata['tools'] != null) {
+          setState(() {
+            toolList = List<Tool>.from(
+              extractdata['tools'].map((toolJson) => Tool.fromJson(toolJson)),
+            );
+            print(toolList[0].toolId);
             titlecenter = "Found";
-          } else {
-            titlecenter = "No tool available";
-            toolList.clear();
-          }
+          });
         } else {
-          titlecenter = "No tool available";
+          setState(() {
+            titlecenter = "No tools available";
+            toolList.clear();
+          });
         }
       } else {
-        titlecenter = "No tool available";
-        toolList.clear();
+        setState(() {
+          titlecenter = "No tools available";
+          toolList.clear();
+        });
       }
-      setState(() {});
-    });
-  }
+    } else {
+      setState(() {
+        titlecenter = "No tools available";
+        toolList.clear();
+      });
+    }
+  });
+}
 
   Future<void> _showDetails(int index) async {
     Tool tool = Tool.fromJson(toolList[index].toJson());
@@ -380,7 +338,7 @@ class _ToolListState extends State<ToolList> {
   void _deletetool(index) {
     try {
       http.post(Uri.parse("${Config.SERVER}/php/delete_tool.php"),
-          body: {"toolid": toolList[index].toolID}).then((response) {
+          body: {'tool_id': toolList[index].toolId}).then((response) {
         var data = jsonDecode(response.body);
         if (response.statusCode == 200 && data['status'] == "success") {
           Fluttertoast.showToast(
@@ -404,20 +362,5 @@ class _ToolListState extends State<ToolList> {
     } catch (e) {
       print(e.toString());
     }
-  }
-
-  void onTabTapped(int value) {
-    setState(() {
-      _currentIndex = value;
-      if (_currentIndex == 0) {
-        maintitle = "Dashboard";
-      } else if (_currentIndex == 1) {
-        maintitle = "Tool Marketplace";
-      } else if (_currentIndex == 2) {
-        maintitle = "Tool List";
-      } else if (_currentIndex == 3) {
-        maintitle = "Account";
-      }
-    });
   }
 }

@@ -6,10 +6,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../models/user.dart';
+import '../../models/tools.dart';
 import 'package:toolshare_portal/config.dart';
 import '../screens/LoginScreen.dart';
 import '../screens/DashboardScreen.dart';
-import '../screens/RegisterAccountScreen.dart';
+import '../screens/MarketplaceScreen.dart';
+import '../screens/ToolList.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +21,9 @@ import 'package:http/http.dart' as http;
 
 class ProfileScreen extends StatefulWidget {
   final User user;
-  const ProfileScreen({super.key, required this.user});
+  final Tool tool;
+  final int selectedIndex;
+  const ProfileScreen({super.key, required this.user, required this.tool, required this.selectedIndex});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -28,7 +32,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late double screenHeight, screenWidth, resWidth;
   File? _image;
-  var pathAsset = "assets/images/profile.png";
+  var pathAsset = "/assets/images/profile.jpg";
   final df = DateFormat('dd/MM/yyyy');
   var val = 50;
 
@@ -43,6 +47,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _ewalletController = TextEditingController();
 
   Random random = Random();
+
+  late List<Widget> tabchildren;
+  String maintitle = "Dashboard";
 
   @override
   void initState() {
@@ -62,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-          appBar: AppBar(title: const Text("Profile")),
+          appBar: AppBar(title: const Text("User Profile")),
           body: Column(children: [
             Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -80,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               child: CachedNetworkImage(
                                 imageUrl:
-                                    "${Config.SERVER}/assets/profileimages/${widget.user.id}.png?v=$val",
+                                    "${Config.SERVER}/assets/profileimages/${widget.user.id}.jpg?v=$val",
                                 placeholder: (context, url) =>
                                     const LinearProgressIndicator(),
                                 errorWidget: (context, url, error) =>
@@ -97,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(widget.user.username.toString(),
+                              Text(widget.user.name.toString(),
                                   style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold)),
@@ -169,18 +176,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   isDisable ? null : _updateUsernameDialog,
                               child: const Text("UPDATE USERNAME"),
                             ),
-                            MaterialButton(
-                              onPressed: isDisable ? null : _updatePhoneDialog,
-                              child: const Text("UPDATE PHONE"),
+                            const Divider(
+                              height: 2,
                             ),
                             MaterialButton(
                               onPressed: isDisable ? null : _changePassDialog,
                               child: const Text("UPDATE PASSWORD"),
                             ),
+                            const Divider(
+                              height: 2,
+                            ),
+                            MaterialButton(
+                              onPressed: isDisable ? null : _updatePhoneDialog,
+                              child: const Text("UPDATE PHONE"),
+                            ),
+                            const Divider(
+                              height: 2,
+                            ),
+                            MaterialButton(
+                              onPressed: isDisable ? null : _updateAddressDialog,
+                              child: const Text("UPDATE ADDRESS"),
+                            ),
+                            const Divider(
+                              height: 2,
+                            ),
                             MaterialButton(
                               onPressed:
                                   isDisable ? null : _updateFinanceDialog,
                               child: const Text("UPDATE FINANCIAL DETAILS"),
+                            ),
+                            const Divider(
+                              height: 2,
                             ),
                             MaterialButton(
                               onPressed: isDisable ? null : _logoutDialog,
@@ -191,7 +217,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 )),
           ]),
-          drawer: MainMenuWidget(user: widget.user)),
+             drawer: MainMenuWidget(user: widget.user, tool: widget.tool),
+          ),
     );
   }
 
@@ -253,7 +280,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             timeInSecForIosWeb: 1,
             fontSize: 16.0);
         setState(() {
-          widget.user.username = newUsername;
+          widget.user.name = newUsername;
         });
       } else {
         Fluttertoast.showToast(
@@ -439,6 +466,95 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  void _updateAddressDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Change Address?",
+            style: TextStyle(),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                minLines: 6,
+                maxLines: 6,
+                controller: _addressController,
+                decoration: InputDecoration(
+                    labelText: 'Home Address',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0))),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your home address';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                String newAddress = _addressController.text;
+                updateAddress(newAddress);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void updateAddress(String newaddress){
+    http.post(Uri.parse("${Config.SERVER}/php/update_profile.php"),
+    body: {
+      "userid": widget.user.id,
+      "newaddress": newaddress,
+      
+      }).then((response) {
+      print(response.body);
+      var jsondata = jsonDecode(response.body);
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        Fluttertoast.showToast(
+            msg: "Success",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 16.0);
+        setState(() {
+          widget.user.address = newaddress;
+        });
+      } else {
+        Fluttertoast.showToast(
+            msg: "Failed",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 16.0);
+      }
+    });
+  }
+
   _updateFinanceDialog() {
     showDialog(
       context: context,
@@ -490,7 +606,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                updateFinance();
+                String newBank = _bankNameController.text;
+                String newAccount = _bankAccountController.text;
+                String newEWallet = _ewalletController.text;
+                updateFinance(newBank, newAccount, newEWallet);
               },
             ),
             TextButton(
@@ -508,8 +627,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void updateFinance(){
-
+  void updateFinance(String newBank, newAccount, newEWallet) {
+    http.post(Uri.parse("${Config.SERVER}/php/update_profile.php"),
+    body: {
+      "userid": widget.user.id,
+      "newBank": newBank,
+      "newAccount": newAccount,
+      "newEWallet": newEWallet
+      }).then((response) {
+      print(response.body);
+      var jsondata = jsonDecode(response.body);
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        Fluttertoast.showToast(
+            msg: "Success",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 16.0);
+        setState(() {
+          widget.user.bankName = newBank;
+          widget.user.bankAccount = newAccount;
+          widget.user.eWallet = newEWallet;
+        });
+      } else {
+        Fluttertoast.showToast(
+            msg: "Failed",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 16.0);
+      }
+    });
   }
 
   _updateImageDialog() {
@@ -518,19 +666,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text(
-              "Select from",
+              "Select picture from",
             ),
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 TextButton.icon(
                     onPressed: () =>
-                        {Navigator.of(context).pop(), _galleryPicker()},
+                        {Navigator.of(context).pop(), _galleryPicker},
                     icon: const Icon(Icons.image),
                     label: const Text("Gallery")),
                 TextButton.icon(
                     onPressed: () =>
-                        {Navigator.of(context).pop(), _cameraPicker()},
+                        {Navigator.of(context).pop(), _cameraPicker},
                     icon: const Icon(Icons.camera_alt),
                     label: const Text("Camera")),
               ],
@@ -645,7 +793,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 User user = User(
                     id: "0",
                     email: "unregistered@email.com",
-                    username: "unregistered",
+                    name: "unregistered",
                     address: "na",
                     phone: "0123456789",
                     regdate: "0",

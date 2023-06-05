@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:toolshare_portal/view/screens/MarketplaceScreen.dart';
-import 'package:toolshare_portal/view/screens/RentPayment.dart';
+import 'package:toolshare_portal/view/screens/HomeScreen.dart';
 import '../../models/user.dart';
 import '../../models/tools.dart';
-import '../screens/DashboardScreen.dart';
-import '../screens/detailscreen.dart';
-import '../screens/ToolList.dart';
-import '../screens/profilescreen.dart';
 import 'EnterExitRoute.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:toolshare_portal/config.dart';
 
 class MainMenuWidget extends StatefulWidget {
   final User user;
@@ -29,8 +26,13 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
           UserAccountsDrawerHeader(
             accountName: Text(widget.user.email.toString()),
             accountEmail: Text(widget.user.name.toString()),
-            currentAccountPicture: const CircleAvatar(
+            currentAccountPicture: CircleAvatar(
               radius: 30.0,
+              backgroundImage: CachedNetworkImageProvider(
+                widget.user.id != null
+                    ? "${Config.SERVER}/assets/profileimages/${widget.user.id}.jpg"
+                    : "${Config.SERVER}/assets/profileimages/imageunknown.jpg",
+              ),
             ),
           ),
           ListTile(
@@ -40,13 +42,15 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                 Navigator.push(
                     context,
                     EnterExitRoute(
-                        exitPage: DashboardScreen(
+                        exitPage: HomePage(
                           user: widget.user,
                           tool: widget.tool,
+                          selectedIndex: 0,
                         ),
-                        enterPage: DashboardScreen(
+                        enterPage: HomePage(
                           user: widget.user,
                           tool: widget.tool,
+                          selectedIndex: 0,
                         )));
               }),
           ListTile(
@@ -56,30 +60,15 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                 Navigator.push(
                     context,
                     EnterExitRoute(
-                        exitPage: DashboardScreen(
+                        exitPage: HomePage(
                           user: widget.user,
                           tool: widget.tool,
+                          selectedIndex: 0,
                         ),
-                        enterPage: MarketplaceScreen(
+                        enterPage: HomePage(
                           user: widget.user,
                           tool: widget.tool,
-                        )));
-              }),
-          ListTile(
-              title: const Text('Rent Payment'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    EnterExitRoute(
-                        exitPage: DashboardScreen(
-                          user: widget.user,
-                          tool: widget.tool,
-                        ),
-                        enterPage: RentPayment(
-                          user: widget.user,
-                          renter: widget.user,
-                          tool: widget.tool,
+                          selectedIndex: 1,
                         )));
               }),
           ListTile(
@@ -89,13 +78,15 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                 Navigator.push(
                     context,
                     EnterExitRoute(
-                        exitPage: DashboardScreen(
+                        exitPage: HomePage(
                           user: widget.user,
                           tool: widget.tool,
+                          selectedIndex: 0,
                         ),
-                        enterPage: ToolList(
+                        enterPage: HomePage(
                           user: widget.user,
                           tool: widget.tool,
+                          selectedIndex: 2,
                         )));
               }),
           ListTile(
@@ -105,13 +96,15 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                 Navigator.push(
                     context,
                     EnterExitRoute(
-                        exitPage: DashboardScreen(
+                        exitPage: HomePage(
                           user: widget.user,
                           tool: widget.tool,
+                          selectedIndex: 0,
                         ),
-                        enterPage: ProfileScreen(
+                        enterPage: HomePage(
                           user: widget.user,
                           tool: widget.tool,
+                          selectedIndex: 3,
                         )));
               }),
         ],

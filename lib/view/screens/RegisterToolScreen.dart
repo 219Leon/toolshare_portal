@@ -9,14 +9,18 @@ import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:toolshare_portal/config.dart';
 import 'package:toolshare_portal/models/user.dart';
+import 'package:toolshare_portal/models/tools.dart';
+import '../shared/mainmenu.dart';
 
 class RegisterToolScreen extends StatefulWidget {
   final User user;
+  final Tool tool;
   final Position position;
   final List<Placemark> placemarks;
   const RegisterToolScreen(
       {super.key,
       required this.user,
+      required this.tool,
       required this.position,
       required this.placemarks});
 
@@ -168,7 +172,7 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
                           flex: 5,
                           child: TextFormField(
                               textInputAction: TextInputAction.next,
-                              controller: _tonameEditingController,
+                              controller: _tostateEditingController,
                               validator: (value) =>
                                   value!.isEmpty || (value.length < 3)
                                       ? "Current State"
@@ -209,12 +213,11 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
                           child: TextFormField(
                               textInputAction: TextInputAction.next,
                               controller: _todelEditingController,
-                              validator: (value) => value!.isEmpty
-                                  ? "Must be more than RM0.00"
-                                  : null,
+                              validator: (value) =>
+                                  value!.isEmpty ? "Must contain value" : null,
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
-                                  labelText: 'Delivery Fees',
+                                  labelText: 'Delivery Fees (Optional)',
                                   labelStyle: TextStyle(),
                                   icon: Icon(Icons.delivery_dining),
                                   focusedBorder: OutlineInputBorder(
@@ -248,6 +251,10 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
           ),
         ],
       )),
+      drawer: MainMenuWidget(
+        user: widget.user,
+        tool: widget.tool,
+      ),
     );
   }
 
@@ -321,24 +328,42 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
-        return AlertDialog(
-            title: const Text(
-              "Select picture from:",
+        return Center(
+          child: AlertDialog(
+          title: const Text(
+            "Select picture from:",
+            style: TextStyle(),
+          ),
+ content: Wrap(
+    alignment: WrapAlignment.spaceAround,
+    children: [
+      GestureDetector(
+        onTap: _onCamera,
+        child: Column(
+          children: [
+            Icon(Icons.camera_alt, size: 64),
+            const Text(
+              "Camera",
               style: TextStyle(),
             ),
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                IconButton(
-                    iconSize: 64,
-                    onPressed: _onCamera,
-                    icon: const Icon(Icons.camera)),
-                IconButton(
-                    iconSize: 64,
-                    onPressed: _onGallery,
-                    icon: const Icon(Icons.browse_gallery)),
-              ],
-            ));
+          ],
+        ),
+      ),
+      GestureDetector(
+        onTap: _onGallery,
+        child: Column(
+          children: [
+            Icon(Icons.image, size: 64),
+            const Text(
+              "Gallery",
+              style: TextStyle(),
+            ),
+          ],
+        ),
+      ),
+    ],
+  ),
+));
       },
     );
   }
@@ -405,11 +430,11 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
     }
   }
 
-  void _checkPermissionGetLoc() async{
+  void _checkPermissionGetLoc() async {
     bool serviceEnabled;
     LocationPermission permission;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
+    if (!serviceEnabled) {
       return Future.error('Location services are disabled.');
     }
     permission = await Geolocator.checkPermission();
@@ -429,7 +454,7 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
     _getAddress(_position);
   }
 
-  _getAddress(Position position) async{
+  _getAddress(Position position) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
           widget.position.latitude, widget.position.longitude);
@@ -440,18 +465,18 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
       });
     } catch (e) {
       Fluttertoast.showToast(
-            msg: "Error in fix your location. Try again.",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 14.0);
-        Navigator.of(context).pop();
+          msg: "Error in fix your location. Try again.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+      Navigator.of(context).pop();
     }
   }
 
   void insertTool() {
-    String toName = _tonameEditingController.text;
-    String toDesc = _todescEditingController.text;
+    String toname = _tonameEditingController.text;
+    String todesc = _todescEditingController.text;
     String toprice = _topriceEditingController.text;
     String delivery = _todelEditingController.text;
     String qty = _toqtyEditingController.text;
@@ -459,21 +484,25 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
     String local = _tolocalEditingController.text;
     String base64Image = base64Encode(_image!.readAsBytesSync());
 
-    http.post(Uri.parse("${Config.SERVER}/php/insert_tool.php"), body: {
-      "userid": widget.user.id,
-      "toname": toName,
-      "todesc": toDesc,
-      "toprice": toprice,
-      "delivery": delivery,
-      "qty": qty,
-      "state": state,
-      "local": local,
-      "lat": _lat,
-      "lng": _lng,
-      "image": base64Image
-    }).then((response) {
+    http.post(
+        Uri.parse("${Config.SERVER}/php/insert_tool.php"),
+        body: {
+          'userid': widget.user.id,
+          'toname': toname,
+          'todesc': todesc,
+          'toprice': toprice,
+          'delivery': delivery,
+          'qty': qty,
+          'state': state,
+          'local': local,
+          'lat': _lat,
+          'lng': _lng,
+          'image': base64Image
+        }).then((response) {
+      print(response.body);
       var data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['status'] == "success") {
+        print("Tool registered successfully");
         Fluttertoast.showToast(
             msg: "Tool registered successfully",
             toastLength: Toast.LENGTH_SHORT,
@@ -483,6 +512,7 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
         Navigator.of(context).pop();
         return;
       } else {
+        print("Unable to register tool");
         Fluttertoast.showToast(
             msg: "Unable to register tool",
             toastLength: Toast.LENGTH_SHORT,
