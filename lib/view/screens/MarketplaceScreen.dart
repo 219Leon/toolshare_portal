@@ -33,6 +33,9 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
   var color;
   var numofpage, curpage = 1;
   int numberofresult = 0;
+  late List<Widget> tabchildren;
+  int _currentIndex = 0;
+  String maintitle = "Marketplace";
 
   @override
   void initState() {

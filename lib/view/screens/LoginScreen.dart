@@ -268,7 +268,6 @@ class _LoginScreenState extends State<LoginScreen> {
     http.post(Uri.parse('${Config.SERVER}/php/login_user.php'),
         body: {'email': _email, 'password': _pass}).then((response) {
           print(_email);
-          print(_pass);
       print(response.body);
       var jsonResponse = json.decode(response.body);
       if (response.statusCode == 200 && jsonResponse['status'] == "success") {

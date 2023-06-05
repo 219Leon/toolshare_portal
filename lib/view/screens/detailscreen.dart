@@ -343,20 +343,4 @@ class _DetailScreenState extends State<DetailScreen> {
       }
     });
   }
-
-
-  void onTabTapped(int value) {
-    setState(() {
-      _currentIndex = value;
-      if (_currentIndex == 0) {
-        maintitle = "Dashboard";
-      } else if (_currentIndex == 1) {
-        maintitle = "Tool Marketplace";
-      } else if (_currentIndex == 2) {
-        maintitle = "Tool List";
-      } else if (_currentIndex == 3) {
-        maintitle = "Account";
-      }
-    });
-  }
 }

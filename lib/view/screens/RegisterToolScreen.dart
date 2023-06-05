@@ -256,6 +256,7 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
         tool: widget.tool,
       ),
     );
+    
   }
 
   void _newToolDialog() {
