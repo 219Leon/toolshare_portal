@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:toolshare_portal/config.dart';
 import '../../models/user.dart';
@@ -15,7 +16,11 @@ class MarketplaceScreen extends StatefulWidget {
   final User user;
   final Tool tool;
   final int selectedIndex;
-  const MarketplaceScreen({Key? key, required this.user, required this.tool, required this.selectedIndex});
+  const MarketplaceScreen(
+      {Key? key,
+      required this.user,
+      required this.tool,
+      required this.selectedIndex});
 
   @override
   State<MarketplaceScreen> createState() => _marketplaceScreenState();
@@ -33,9 +38,6 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
   var color;
   var numofpage, curpage = 1;
   int numberofresult = 0;
-  late List<Widget> tabchildren;
-  int _currentIndex = 0;
-  String maintitle = "Marketplace";
 
   @override
   void initState() {
@@ -63,11 +65,18 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
           title: const Text("Tools Available"),
           actions: [
             TextButton.icon(
-                onPressed: () {
-                  _loadSearchDialog();
-                },
-                icon: const Icon(Icons.search, color: Colors.white,),
-                label: const Text("Search", style: TextStyle(color: Colors.white),),)
+              onPressed: () {
+                _loadSearchDialog();
+              },
+              icon: const Icon(
+                Icons.search,
+                color: Colors.white,
+              ),
+              label: const Text(
+                "Search",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
           ],
         ),
         body: toolList.isEmpty
@@ -111,7 +120,7 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
                                     placeholder: (context, url) =>
                                         const LinearProgressIndicator(),
                                     errorWidget: (context, url, error) {
-                                    return const Icon(Icons.error);
+                                      return const Icon(Icons.error);
                                     },
                                   ),
                                 ),
@@ -132,7 +141,10 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
                                                   fontWeight: FontWeight.bold)),
                                           Text(
                                               "RM ${double.parse(toolList[index].toolRentPrice.toString()).toStringAsFixed(2)} per hour"),
-                                          Text(df.format(DateTime.parse(toolList[index].toolDate.toString())))
+                                          Text(df.format(DateTime.parse(
+                                              toolList[index]
+                                                  .toolDate
+                                                  .toString())))
                                         ],
                                       ),
                                     )),
@@ -163,8 +175,7 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
                   ),
                 ],
               ),
-                 drawer: MainMenuWidget(user: widget.user, tool: widget.tool),
-
+        drawer: MainMenuWidget(user: widget.user, tool: widget.tool),
       ),
     );
   }
@@ -177,57 +188,60 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
       return str;
     }
   }
-void _loadTools(String search, int pageno) {
-  setState(() {
-    curpage = pageno;
-    numofpage ??= 1;
-  });
 
-  http.get(
-    Uri.parse("${Config.SERVER}/php/loadalltools.php?search=$search&pageno=$pageno"),
-  ).then((response) {
-    ProgressDialog progressDialog = ProgressDialog(
-      context,
-      blur: 5,
-      message: const Text("Loading..."),
-      title: null,
-    );
-    progressDialog.show();
-    print(response.body);
-    if (response.statusCode == 200) {
-      var jsondata = jsonDecode(response.body);
-      if (jsondata['status'] == 'success') {
-        var extractdata = jsondata['data'];
-        if (extractdata['tools'] != null) {
-          print("Success");
-          setState(() {
-            numofpage = int.parse(jsondata['numofpage']);
-            numberofresult = int.parse(jsondata['numberofresult']);
-            toolList = List<Tool>.from(
-              extractdata['tools'].map((toolJson) => Tool.fromJson(toolJson)),
-            );
-            titlecenter = "Found";
-          });
-        } else {
-          print("Failed");
-          setState(() {
-            titlecenter = "No Tools Available";
-            toolList.clear();
-          });
+  void _loadTools(String search, int pageno) {
+    setState(() {
+      curpage = pageno;
+      numofpage ??= 1;
+    });
+
+    http
+        .get(
+      Uri.parse(
+          "${Config.SERVER}/php/loadalltools.php?search=$search&pageno=$pageno"),
+    )
+        .then((response) {
+      ProgressDialog progressDialog = ProgressDialog(
+        context,
+        blur: 5,
+        message: const Text("Loading..."),
+        title: null,
+      );
+      progressDialog.show();
+      print(response.body);
+      if (response.statusCode == 200) {
+        var jsondata = jsonDecode(response.body);
+        if (jsondata['status'] == 'success') {
+          var extractdata = jsondata['data'];
+          if (extractdata['tools'] != null) {
+            print("Success");
+            setState(() {
+              numofpage = int.parse(jsondata['numofpage']);
+              numberofresult = int.parse(jsondata['numberofresult']);
+              toolList = List<Tool>.from(
+                extractdata['tools'].map((toolJson) => Tool.fromJson(toolJson)),
+              );
+              titlecenter = "Found";
+            });
+          } else {
+            print("Failed");
+            setState(() {
+              titlecenter = "No Tools Available";
+              toolList.clear();
+            });
+          }
         }
+      } else {
+        print("Error");
+        setState(() {
+          titlecenter = "No Tools Available";
+          toolList.clear();
+        });
       }
-    } else {
-      print("Error");
-      setState(() {
-        titlecenter = "No Tools Available";
-        toolList.clear();
-      });
-    }
 
-    progressDialog.dismiss();
-  });
-}
-
+      progressDialog.dismiss();
+    });
+  }
 
   _loadSearchDialog() {
     searchController.text = "";
@@ -284,20 +298,27 @@ void _loadTools(String search, int pageno) {
     );
     progressDialog.show();
     await Future.delayed(const Duration(seconds: 1));
-      if (renter != null) {
-        progressDialog.dismiss();
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (content) => RenteeToolDetails(
-                    user: widget.user, tool: tool, renter: renter)));
-      }
-   
+    if (toolList[index].userId == widget.user.id) {
+      progressDialog.dismiss();
+      Fluttertoast.showToast(
+        msg: "You cannot rent your own tool",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        fontSize: 16.0,
+      );
+    } else {
+      progressDialog.dismiss();
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (content) => RenteeToolDetails(
+                  user: widget.user, tool: tool, renter: renter)));
+    }
   }
 
   loadSingleRenter(int index) async {
-    http.post(
-        Uri.parse("${Config.SERVER}/php/load_renter.php"),
+    http.post(Uri.parse("${Config.SERVER}/php/load_renter.php"),
         body: {"renterid": toolList[index].userId}).then((response) {
       print(response.body);
       var jsonResponse = json.decode(response.body);

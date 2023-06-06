@@ -38,6 +38,7 @@ class Tool{
     toolLocal = json['tool_local'];
     toolLat = json['tool_lat'];
     toolLng = json['tool_lng'];
+    toolDate = json['tool_date'];
   }
   
   Map<String, dynamic> toJson() {

@@ -1,21 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toolshare_portal/models/tools.dart';
 import 'package:toolshare_portal/models/user.dart';
-import 'LoginScreen.dart';
 import 'package:toolshare_portal/config.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
-import '../shared/mainmenu.dart';
 import 'package:file_picker/file_picker.dart';
-import '../../models/tools.dart';
 import 'package:open_file/open_file.dart';
 
 class RentPayment extends StatefulWidget {
@@ -51,6 +44,8 @@ class RentPaymentState extends State<RentPayment> {
   Widget build(BuildContext context) {
     final hours = dateTime.hour.toString().padLeft(2, '0');
     final minutes = dateTime.minute.toString().padLeft(2, '0');
+    final hours2 = dateTime2.hour.toString().padLeft(2, '0');
+    final minutes2 = dateTime2.minute.toString().padLeft(2, '0');
     final totalHours = dateTime2.difference(dateTime).inHours;
     final rentPrice = double.parse(widget.tool.toolRentPrice ?? '0');
     final delivery = double.parse(widget.tool.toolDelivery ?? '0');
@@ -194,7 +189,7 @@ class RentPaymentState extends State<RentPayment> {
                             );
                             setState(() => dateTime2 = newDateTimeEnd); 
                           },
-                          child: Text('$hours:$minutes'),
+                          child: Text('$hours2:$minutes2'),
                         ),
                       ],
                     ),
@@ -384,6 +379,9 @@ class RentPaymentState extends State<RentPayment> {
     http.post(Uri.parse("${Config.SERVER}/php/transaction.php"), body: {
       "userid": widget.user.id,
       "image": base64Image,
+      "startdate": dateTime,
+      "enddate": dateTime2,
+     // "totalprice": totalPrice,
     }).then((response) {
       var jsondata = jsonDecode(response.body);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
@@ -394,9 +392,6 @@ class RentPaymentState extends State<RentPayment> {
             timeInSecForIosWeb: 1,
             fontSize: 16.0);
         setState(() {});
-        //DefaultCacheManager manager = DefaultCacheManager();
-        //manager.emptyCache(); //clears all data in cache.
-
       } else {
         Fluttertoast.showToast(
             msg: "Failed",
