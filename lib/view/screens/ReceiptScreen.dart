@@ -17,13 +17,12 @@ class ReceiptScreen extends StatefulWidget {
   final User user;
   final Tool tool;
   final User renter;
-  final Transaction transaction;
-  const ReceiptScreen(
+  ReceiptScreen(
       {super.key,
       required this.user,
       required this.tool,
       required this.renter,
-      required this.transaction});
+      });
 
   @override
   State<ReceiptScreen> createState() => _ReceiptState();
@@ -56,6 +55,7 @@ class _ReceiptState extends State<ReceiptScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+               Image.asset('assets/images/success.png'),
               Text("Transaction Successful!",
                   style: const TextStyle(
                       fontSize: 24, fontWeight: FontWeight.bold)),
@@ -74,14 +74,14 @@ class _ReceiptState extends State<ReceiptScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
-                          Text('Tool Name', style: TextStyle(fontSize: 20))
+                          Text('Tool Name', style: TextStyle(fontSize: 16))
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(widget.tool.toolName.toString(),
-                              style: const TextStyle(fontSize: 20)),
+                              style: const TextStyle(fontSize: 16)),
                         ],
                       )
                     ]),
@@ -90,14 +90,13 @@ class _ReceiptState extends State<ReceiptScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text('Transaction ID:',
-                              style: TextStyle(fontSize: 20))
+                              style: TextStyle(fontSize: 16))
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(widget.transaction.transactionId.toString(),
-                              style: const TextStyle(fontSize: 20)),
+                         // Text(widget.transaction.transactionId.toString(),style: const TextStyle(fontSize: 16)),
                         ],
                       )
                     ]),
@@ -106,14 +105,13 @@ class _ReceiptState extends State<ReceiptScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text('Transaction date:',
-                              style: TextStyle(fontSize: 20))
+                              style: TextStyle(fontSize: 16))
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(df.format(DateTime.parse(
-                              widget.transaction.transactionDate.toString())))
+                  //        Text(df.format(DateTime.parse(widget.transaction.transactionDate.toString())))
                         ],
                       )
                     ]),
@@ -121,14 +119,14 @@ class _ReceiptState extends State<ReceiptScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
-                          Text('Pay to:', style: TextStyle(fontSize: 20))
+                          Text('Pay to:', style: TextStyle(fontSize: 16))
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(widget.renter.name.toString(),
-                              style: const TextStyle(fontSize: 20)),
+                              style: const TextStyle(fontSize: 16)),
                         ],
                       )
                     ]),
@@ -136,14 +134,13 @@ class _ReceiptState extends State<ReceiptScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
-                          Text('Start Date:', style: TextStyle(fontSize: 20))
+                          Text('Start Date:', style: TextStyle(fontSize: 16))
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(df.format(DateTime.parse(
-                              widget.transaction.startDate.toString())))
+                    //      Text(df.format(DateTime.parse(widget.transaction.startDate.toString())))
                         ],
                       )
                     ]),
@@ -151,14 +148,13 @@ class _ReceiptState extends State<ReceiptScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
-                          Text('End Date:', style: TextStyle(fontSize: 20))
+                          Text('End Date:', style: TextStyle(fontSize: 16))
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(df.format(DateTime.parse(
-                              widget.transaction.endDate.toString())))
+                     //     Text(df.format(DateTime.parse(widget.transaction.endDate.toString())))
                         ],
                       )
                     ]),
@@ -166,15 +162,13 @@ class _ReceiptState extends State<ReceiptScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
-                          Text('Total Price', style: TextStyle(fontSize: 20))
+                          Text('Total Price:', style: TextStyle(fontSize: 16))
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                              "RM ${double.parse(widget.transaction.totalPrice.toString()).toStringAsFixed(2)}",
-                              style: const TextStyle(fontSize: 20)),
+                     //     Text("RM ${double.parse(widget.transaction.totalPrice.toString()).toStringAsFixed(2)}",style: const TextStyle(fontSize: 16)),
                         ],
                       )
                     ]),

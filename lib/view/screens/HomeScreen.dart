@@ -56,17 +56,17 @@ class _HomePageState extends State<HomePage> {
                 });
               },
               curve: Curves.easeOutExpo,
-              gap: 10,
+              gap: 10, 
               padding: const EdgeInsets.symmetric(
                 horizontal: 18,
                 vertical: 18,
               ),
-              activeColor: Colors.blue,
-              tabBorder: Border.all(color: Colors.blueAccent),
+              activeColor: const Color.fromARGB(255, 15, 81, 176),
+              tabBorder: Border.all(color: const Color.fromARGB(255, 15, 81, 176)),
               tabActiveBorder: Border.all(),
-              tabBorderRadius: 30,
-              iconSize: 20,
-              tabBackgroundColor: Colors.blue.withOpacity(0.1),
+              tabBorderRadius: 25,
+              iconSize: 15,
+              tabBackgroundColor: const Color.fromARGB(255, 15, 81, 176).withOpacity(0.1),
               tabs: const [
                 GButton(
                   icon: Icons.home,

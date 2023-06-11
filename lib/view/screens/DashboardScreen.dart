@@ -72,70 +72,72 @@ class _dashboardScreenState extends State<DashboardScreen> {
         appBar: AppBar(
           title: const Text("User Dashboard"),
         ),
-        body: Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            const Text("Welcome back,",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            Text(widget.user.name.toString(),
-                style:
-                    const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 30),
-            CarouselSlider(
-              options: CarouselOptions(
-                enlargeCenterPage: true,
-                enableInfiniteScroll: true,
-                autoPlay: true,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 10,
               ),
-              items: imageList
-                  .map((e) => ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: <Widget>[
-                            Image.asset(e,
-                                height: 500, width: 250, fit: BoxFit.fill)
-                          ],
-                        ),
-                      ))
-                  .toList(),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            const Text(
-              'Featured Tools',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
+              const Text("Welcome back,",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              Text(widget.user.name.toString(),
+                  style:
+                      const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 30),
+              CarouselSlider(
+                options: CarouselOptions(
+                  enlargeCenterPage: true,
+                  enableInfiniteScroll: true,
+                  autoPlay: true,
+                ),
+                items: imageList
+                    .map((e) => ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: <Widget>[
+                              Image.asset(e,
+                                  height: 500, width: 250, fit: BoxFit.fill)
+                            ],
+                          ),
+                        ))
+                    .toList(),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            CarouselSlider(
-              options: CarouselOptions(
-                enlargeCenterPage: true,
-                enableInfiniteScroll: true,
-                autoPlay: true,
+              const SizedBox(
+                height: 20,
               ),
-              items: imageList2
-                  .map((e) => ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: <Widget>[
-                            Image.asset(e,
-                                height: 500, width: 250, fit: BoxFit.fill)
-                          ],
-                        ),
-                      ))
-                  .toList(),
-            ),
-            const SizedBox(height: 8.0),
-          ],
+              const Text(
+                'Featured Tools',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CarouselSlider(
+                options: CarouselOptions(
+                  enlargeCenterPage: true,
+                  enableInfiniteScroll: true,
+                  autoPlay: true,
+                ),
+                items: imageList2
+                    .map((e) => ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: <Widget>[
+                              Image.asset(e,
+                                  height: 500, width: 250, fit: BoxFit.fill)
+                            ],
+                          ),
+                        ))
+                    .toList(),
+              ),
+              const SizedBox(height: 8.0),
+            ],
+          ),
         ),
         drawer: MainMenuWidget(user: widget.user, tool: widget.tool),
       ),

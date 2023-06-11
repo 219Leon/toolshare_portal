@@ -89,7 +89,7 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: Text(
-                      "Available Tools ($numberofresult found)",
+                      "Available Tool(s) ($numberofresult found)",
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -113,7 +113,7 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
                                   height: 8,
                                 ),
                                 Flexible(
-                                  flex: 6,
+                                  flex: 7,
                                   child: CachedNetworkImage(
                                     imageUrl:
                                         "${Config.SERVER}/assets/toolimages/${toolList[index].toolId}.png",
@@ -125,7 +125,7 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
                                   ),
                                 ),
                                 Flexible(
-                                    flex: 4,
+                                    flex: 7,
                                     child: Padding(
                                       padding: const EdgeInsets.all(8),
                                       child: Column(
@@ -141,10 +141,7 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
                                                   fontWeight: FontWeight.bold)),
                                           Text(
                                               "RM ${double.parse(toolList[index].toolRentPrice.toString()).toStringAsFixed(2)} per hour"),
-                                          Text(df.format(DateTime.parse(
-                                              toolList[index]
-                                                  .toolDate
-                                                  .toString())))
+                                          Text("Delivery Fees: RM ${double.parse(toolList[index].toolDelivery.toString()).toStringAsFixed(2)} ", style: const TextStyle(fontSize: 11),)
                                         ],
                                       ),
                                     )),
@@ -204,7 +201,7 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
       ProgressDialog progressDialog = ProgressDialog(
         context,
         blur: 5,
-        message: const Text("Loading..."),
+        message: const Text("Loading all tools..."),
         title: null,
       );
       progressDialog.show();
@@ -293,7 +290,7 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
     ProgressDialog progressDialog = ProgressDialog(
       context,
       blur: 5,
-      message: const Text("Loading..."),
+      message: const Text("Loading details..."),
       title: null,
     );
     progressDialog.show();
@@ -301,7 +298,7 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
     if (toolList[index].userId == widget.user.id) {
       progressDialog.dismiss();
       Fluttertoast.showToast(
-        msg: "You cannot rent your own tool",
+        msg: "You cannot rent your own tool!",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,

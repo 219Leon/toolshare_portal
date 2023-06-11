@@ -79,82 +79,80 @@ class _ToolListState extends State<ToolList> {
                   ),
                 )
               : Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        "Current tools available (${toolList.length} found)",
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          "Current tools available (${toolList.length} found)",
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Expanded(
-                        child: GridView.count(
-                      crossAxisCount: rowcount,
-                      children: List.generate(toolList.length, (index) {
-                        print(toolList);
-                        return Card(
-                          elevation: 8,
-                          child: InkWell(
-                            onTap: () {
-                              _showDetails(index);
-                            },
-                            onLongPress: () {
-                              _deleteDialog(index);
-                            },
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                Flexible(
-                                    flex: 6,
-                                    child: CachedNetworkImage(
-                                      width: resWidth,
-                                      fit: BoxFit.cover,
-                                      imageUrl:
-                                          "${Config.SERVER}/assets/toolimages/${toolList[index].toolId}.png",
-                                      placeholder: (context, url) =>
-                                          const LinearProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                    )),
-                                Flexible(
-                                    flex: 4,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            truncateString(
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Expanded(
+                          child: GridView.count(
+                        crossAxisCount: rowcount,
+                        children: List.generate(toolList.length, (index) {
+                          print(toolList);
+                          return Card(
+                            elevation: 8,
+                            child: InkWell(
+                              onTap: () {
+                                _showDetails(index);
+                              },
+                              onLongPress: () {
+                                _deleteDialog(index);
+                              },
+                              child: Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Flexible(
+                                      flex: 7,
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            "${Config.SERVER}/assets/toolimages/${toolList[index].toolId}.png",
+                                        placeholder: (context, url) =>
+                                            const LinearProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                      )),
+                                  Flexible(
+                                      flex: 7,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              truncateString(
+                                                  toolList[index]
+                                                      .toolName
+                                                      .toString(),
+                                                  15),
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                                "RM ${double.parse(toolList[index].toolRentPrice.toString()).toStringAsFixed(2)} per hour"),
+                                            Text(df.format(DateTime.parse(
                                                 toolList[index]
-                                                    .toolName
-                                                    .toString(),
-                                                15),
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                              "RM ${double.parse(toolList[index].toolRentPrice.toString()).toStringAsFixed(2)} per hour"),
-                                          Text(df.format(DateTime.parse(
-                                              toolList[index]
-                                                  .toolDate
-                                                  .toString())))
-                                        ],
-                                      ),
-                                    ))
-                              ],
+                                                    .toolDate
+                                                    .toString())), style:const TextStyle(fontSize: 10),)
+                                          ],
+                                        ),
+                                      ))
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                    ))
-                  ],
-                ),
+                          );
+                        }),
+                      ))
+                    ],
+                  ),
           drawer: MainMenuWidget(user: widget.user, tool: widget.tool),
           floatingActionButton: FloatingActionButton(
             onPressed: _gotoNewTool,
@@ -305,10 +303,10 @@ class _ToolListState extends State<ToolList> {
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: Text(
-            "Delete ${truncateString(toolList[index].toolName.toString(), 15)}",
+            "Delete ${truncateString(toolList[index].toolName.toString(), 15)}?",
             style: TextStyle(),
           ),
-          content: const Text("Are you sure?", style: TextStyle()),
+          content: const Text("Are you sure? This cannot be undone.", style: TextStyle()),
           actions: <Widget>[
             TextButton(
               child: const Text(
@@ -342,7 +340,7 @@ class _ToolListState extends State<ToolList> {
         var data = jsonDecode(response.body);
         if (response.statusCode == 200 && data['status'] == "success") {
           Fluttertoast.showToast(
-              msg: "Success",
+              msg: "Tool deleted successfully",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,

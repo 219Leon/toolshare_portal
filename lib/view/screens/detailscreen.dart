@@ -37,9 +37,6 @@ class _DetailScreenState extends State<DetailScreen> {
   File? _image;
   late double screenHeight, screenWidth, resWidth;
   int rowcount = 2;
-  late List<Widget> tabchildren;
-  int _currentIndex = 2;
-  String maintitle = "Tool List";
   @override
   void initState() {
     super.initState();
@@ -189,7 +186,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             flex: 5,
                             child: TextFormField(
                               textInputAction: TextInputAction.next,
-                              controller: _topriceEditingController,
+                              controller: _tolocalEditingController,
                               validator: (val) =>
                                   val!.isEmpty || (val.length < 3)
                                       ? "Field must not be empty"
@@ -211,7 +208,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             flex: 5,
                             child: TextFormField(
                               textInputAction: TextInputAction.next,
-                              controller: _topriceEditingController,
+                              controller: _todelEditingController,
                               validator: (val) =>
                                   val!.isEmpty ? "Must contain value" : null,
                               keyboardType: TextInputType.number,
@@ -227,7 +224,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             flex: 5,
                             child: CheckboxListTile(
                                 title: const Text(
-                                    "I hereby declare that my tool stated is lawful item and in good condition"),
+                                    "I hereby declare that the details I provided are true"),
                                 value: _isChecked,
                                 onChanged: (bool? value) {
                                   setState(() {
@@ -240,7 +237,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       width: 200,
                       child: ElevatedButton(
                         child: const Text('Update Tool'),
-                        onPressed: () => {_updateToolDialog()},
+                        onPressed: () => _updateToolDialog(),
                       ),
                     )
                   ],
@@ -263,7 +260,7 @@ class _DetailScreenState extends State<DetailScreen> {
     }
     if (!_isChecked) {
       Fluttertoast.showToast(
-          msg: "Please check agree checkbox",
+          msg: "Please check the verification checkbox",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -307,14 +304,15 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  void _updateTool() {
+  void _updateTool() async {
     String toname = _tonameEditingController.text;
     String todesc = _todescEditingController.text;
     String toprice = _topriceEditingController.text;
     String delivery = _todelEditingController.text;
     String qty = _toqtyEditingController.text;
-     http.post(Uri.parse("${Config.SERVER}/php/update_product.php"), body: {
-      'productid': widget.tool.toolId,
+
+    var response = await http.post(Uri.parse('${Config.SERVER}/php/update_tool.php'), body: {
+      'toolid': widget.tool.toolId,
       'userid': widget.user.id,
       'toname': toname,
       'todesc': todesc,
@@ -325,7 +323,7 @@ class _DetailScreenState extends State<DetailScreen> {
       var data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['status'] == "success") {
         Fluttertoast.showToast(
-            msg: "Success",
+            msg: "Edit tool success",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -334,7 +332,7 @@ class _DetailScreenState extends State<DetailScreen> {
         return;
       } else {
         Fluttertoast.showToast(
-            msg: "Failed",
+            msg: "Edit tool failed",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,

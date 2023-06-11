@@ -115,19 +115,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Table(
                                 columnWidths: const {
-                                  0: FractionColumnWidth(0.3),
-                                  1: FractionColumnWidth(0.7)
+                                  0: FractionColumnWidth(0.2),
+                                  1: FractionColumnWidth(0.8)
                                 },
                                 defaultVerticalAlignment:
                                     TableCellVerticalAlignment.middle,
                                 children: [
                                   TableRow(children: [
                                     const Icon(Icons.email),
-                                    Text(widget.user.email.toString()),
+                                    Text(widget.user.email.toString(), style: const TextStyle(fontSize: 12),),
                                   ]),
                                   TableRow(children: [
                                     const Icon(Icons.phone),
-                                    Text(widget.user.phone.toString()),
+                                    Text(widget.user.phone.toString(), style: const TextStyle(fontSize: 12),),
                                   ]),
                                   widget.user.regdate.toString() == ""
                                       ? TableRow(children: [

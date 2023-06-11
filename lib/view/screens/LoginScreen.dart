@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isChecked = false;
   late double screenHeight, screenWidth, cardwitdh;
-  
+
   @override
   void initState() {
     super.initState();
@@ -38,190 +38,197 @@ class _LoginScreenState extends State<LoginScreen> {
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Stack(
-        children: [
-          upperHalf(context),
-          lowerHalf(context)
-        ],
+        children: [upperHalf(context), lowerHalf(context)],
       ),
     );
   }
 
-  Widget upperHalf(BuildContext context){
+  Widget upperHalf(BuildContext context) {
     return SizedBox(
       height: screenHeight / 2,
       width: screenWidth,
-      child: Image.asset('assets/images/LoginScreen.png', 
-      fit: BoxFit.cover,),
+      child: Image.asset(
+        'assets/images/LoginScreen.png',
+        fit: BoxFit.cover,
+      ),
     );
   }
 
-    Widget lowerHalf(BuildContext context){
+  Widget lowerHalf(BuildContext context) {
     return Container(
-      height: 600,
-      margin: EdgeInsets.only(top: screenHeight /3),
-      padding: const EdgeInsets.only(left:10, right: 10),
-      child: SingleChildScrollView(
-        child: Column(
+        height: 600,
+        margin: EdgeInsets.only(top: screenHeight / 3),
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        child: SingleChildScrollView(
+            child: Column(
           children: [
             Card(
-              elevation: 10,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(25,10,20,25),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      const SizedBox(height:10),
-                      const Text("Your one-stop portal to",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,),
-                        ),
-                      const Text("rent your tools and equipments",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,),
-                        ),
-                      const SizedBox(height:10),
-                      TextFormField(
-                        textInputAction: TextInputAction.next,
-                        validator: (val) => val!.isEmpty ||
-                              !val.contains("@") ||
-                              !val.contains(".")
-                              ? "Enter a valid email!"
-                              : null,
-                        controller: _emailEditingController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          labelStyle: TextStyle(),
-                          labelText: 'Email',
-                          icon: Icon(Icons.email_outlined),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 1.5
-                            ),
-                          )
-                        ),
-                      ),
-                      TextFormField(
-                        textInputAction: TextInputAction.done,
-                        validator: (val) => validatePassword(val.toString()),
-                        controller: _passEditingController,
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          labelStyle: TextStyle(),
-                          labelText: 'Password',
-                          icon: Icon(Icons.lock_outline),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 1.5
-                            ),
-                          )
-                        ),
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const SizedBox(height:10),
-                          Checkbox(
-                            value: _isChecked, 
-                            onChanged: (bool? value) {
-                              _onRememberMeChanged(value!);
-                            }),
-                          const Flexible(child: Text('Remember me',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),)),  
-                          MaterialButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                            minWidth: 115,
-                            height: 50,
-                            child: const Text('Login'),
-                            elevation: 10,
-                            color: Colors.blue,
-                            onPressed: _loginUser)
-                        ],
-                      ),
-                    ],
-              )))),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const SizedBox(height:10),
-                  const Text("Didn’t have an account?", 
-                  style: TextStyle(fontSize: 16.0)),
-                  GestureDetector(
-                    onTap: () => {
-                      Navigator.push(context, 
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => 
-                          const RegisterAccountScreen()))
-                    },
-                    child: const Text(" Register now!",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold
-                    ),),
-                  )
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text("Forgot password? ",
-                      style: TextStyle(fontSize: 16.0, )),
-                      GestureDetector(
-                        onTap: null,
-                              child: const Text(" Click here",
+                elevation: 10,
+                child: Container(
+                    padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
+                    child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 10),
+                            const Text(
+                              "Your one-stop portal to",
                               style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Text(
+                              "rent your tools and",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Text(
+                              "equipments",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextFormField(
+                              textInputAction: TextInputAction.next,
+                              validator: (val) => val!.isEmpty ||
+                                      !val.contains("@") ||
+                                      !val.contains(".")
+                                  ? "Enter a valid email!"
+                                  : null,
+                              controller: _emailEditingController,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: const InputDecoration(
+                                  labelStyle: TextStyle(),
+                                  labelText: 'Email',
+                                  icon: Icon(Icons.email_outlined),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(width: 1.5),
+                                  )),
+                            ),
+                            TextFormField(
+                              textInputAction: TextInputAction.done,
+                              validator: (val) =>
+                                  validatePassword(val.toString()),
+                              controller: _passEditingController,
+                              keyboardType: TextInputType.visiblePassword,
+                              decoration: const InputDecoration(
+                                  labelStyle: TextStyle(),
+                                  labelText: 'Password',
+                                  icon: Icon(Icons.lock_outline),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(width: 1.5),
+                                  )),
+                              obscureText: true,
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                const SizedBox(height: 10),
+                                Checkbox(
+                                    value: _isChecked,
+                                    onChanged: (bool? value) {
+                                      _onRememberMeChanged(value!);
+                                    }),
+                                const Flexible(
+                                    child: Text(
+                                  'Remember me',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                   ),
-           ),
-        ]
-        )],
-      )));
+                                )),
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                      fixedSize: MaterialStateProperty.all(
+                                          const Size(120,50)),
+                                    ),
+                                    onPressed: _loginUser,
+                                    child: const Text('Login'))
+                              ],
+                            ),
+                          ],
+                        )))),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const SizedBox(height: 10),
+                const Text("Didn’t have an account?",
+                    style: TextStyle(fontSize: 16.0)),
+                GestureDetector(
+                  onTap: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const RegisterAccountScreen()))
+                  },
+                  child: const Text(
+                    " Register now!",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              const Text("Forgot password? ",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  )),
+              GestureDetector(
+                onTap: null,
+                child: const Text(
+                  " Click here",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ])
+          ],
+        )));
   }
 
-  void savermovepref(bool value) async{
+  void savermovepref(bool value) async {
     FocusScope.of(context).requestFocus(FocusNode());
     String email = _emailEditingController.text;
     String password = _passEditingController.text;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (value){
+    if (value) {
       if (!_formKey.currentState!.validate()) {
         Fluttertoast.showToast(
-          msg: "Please fill in the login credentials",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          fontSize: 14.0);
-          _isChecked = false;
-        return;  
+            msg: "Please fill in the login credentials",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+        _isChecked = false;
+        return;
       }
-        await prefs.setString('email', email);
-        await prefs.setString('pass', password);
-        Fluttertoast.showToast(
+      await prefs.setString('email', email);
+      await prefs.setString('pass', password);
+      Fluttertoast.showToast(
           msg: "Credentials stored",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
           fontSize: 14.0);
     } else {
-        await prefs.setString('email', '');
-        await prefs.setString('pass', '');
-        setState(() {
-          _emailEditingController.text = '';
-          _passEditingController.text = '';
-          _isChecked = false;
-        });
-        Fluttertoast.showToast(
+      await prefs.setString('email', '');
+      await prefs.setString('pass', '');
+      setState(() {
+        _emailEditingController.text = '';
+        _passEditingController.text = '';
+        _isChecked = false;
+      });
+      Fluttertoast.showToast(
           msg: "Credentials removed",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
@@ -231,14 +238,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onRememberMeChanged(bool newValue) => setState(() {
-    _isChecked = newValue;
-    if (_isChecked){
-        savermovepref(true);
-      } else {
-        savermovepref(false);
-      }
-  });
-  
+        _isChecked = newValue;
+        if (_isChecked) {
+          savermovepref(true);
+        } else {
+          savermovepref(false);
+        }
+      });
+
   Future<void> loadPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String email = (prefs.getString('email')) ?? '';
@@ -267,17 +274,23 @@ class _LoginScreenState extends State<LoginScreen> {
     String _pass = _passEditingController.text;
     http.post(Uri.parse('${Config.SERVER}/php/login_user.php'),
         body: {'email': _email, 'password': _pass}).then((response) {
-          print(_email);
+      print(_email);
       print(response.body);
       var jsonResponse = json.decode(response.body);
       if (response.statusCode == 200 && jsonResponse['status'] == "success") {
         print(jsonResponse);
         User user = User.fromJson(jsonResponse['data']);
-        Tool tool  = Tool.fromJson(jsonResponse['data']);
+        Tool tool = Tool.fromJson(jsonResponse['data']);
         print(user.phone);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (content) => HomePage(user: user, tool:tool, selectedIndex: 0,)));
-      } else if (response.statusCode != 200){
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (content) => HomePage(
+                      user: user,
+                      tool: tool,
+                      selectedIndex: 0,
+                    )));
+      } else if (response.statusCode != 200) {
         Fluttertoast.showToast(
             msg: "Login Failed. No response.",
             toastLength: Toast.LENGTH_SHORT,
@@ -294,6 +307,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     });
   }
+
   String? validatePassword(String value) {
     String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$';
     RegExp regex = RegExp(pattern);

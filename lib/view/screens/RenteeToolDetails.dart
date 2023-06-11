@@ -42,14 +42,15 @@ class _renteeToolDetailsState extends State<RenteeToolDetails> {
       resWidth = screenWidth * 0.90;
     }
     return Scaffold(
-      appBar: AppBar(title: Text("Details for ${widget.tool.toolName.toString()}")),
+      appBar:
+          AppBar(title: Text("Details for ${widget.tool.toolName.toString()}")),
       body: Column(
         children: [
           Card(
               elevation: 8,
               child: Container(
-                  height: screenHeight / 3,
-                  width: resWidth,
+                  height: screenHeight / 4,
+                  width: resWidth / 1.2,
                   child: CachedNetworkImage(
                     imageUrl:
                         "${Config.SERVER}/assets/toolimages/${widget.tool.toolId}.png",
@@ -61,8 +62,9 @@ class _renteeToolDetailsState extends State<RenteeToolDetails> {
                         const Icon(Icons.error),
                   ))),
           const SizedBox(height: 10),
-          Text(widget.tool.toolName.toString(),style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)
-          ),
+          Text(widget.tool.toolName.toString(),
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           SizedBox(
             width: screenWidth - 16,
@@ -70,88 +72,123 @@ class _renteeToolDetailsState extends State<RenteeToolDetails> {
               border: TableBorder.all(
                   color: Colors.black, style: BorderStyle.none, width: 1),
               columnWidths: const {
-                0: FixedColumnWidth(70),
-                1: FixedColumnWidth(200),
+                0: FixedColumnWidth(80),
+                1: FixedColumnWidth(10),
+                2: FixedColumnWidth(180),
               },
               children: [
                 TableRow(children: [
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Text('Description', style: TextStyle(fontSize: 20.0))
+                        Text('Description', style: TextStyle(fontSize: 13))
                       ]),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                  ),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.tool.toolDesc.toString(),style: const TextStyle(fontSize: 20.0)),
+                        Text(widget.tool.toolDesc.toString(),
+                            style: const TextStyle(fontSize: 13)),
                       ]),
                 ]),
                 TableRow(children: [
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Text('Price', style: TextStyle(fontSize: 20.0))
+                        Text('Price', style: TextStyle(fontSize: 13))
                       ]),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                  ),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("RM ${double.parse(widget.tool.toolRentPrice.toString()).toStringAsFixed(2)} per hour",style: const TextStyle(fontSize: 20.0)),
+                        Text(
+                            "RM ${double.parse(widget.tool.toolRentPrice.toString()).toStringAsFixed(2)} per hour",
+                            style: const TextStyle(fontSize: 13)),
                       ]),
                 ]),
                 TableRow(children: [
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Text('Delivery Fees', style: TextStyle(fontSize: 20.0))
+                        Text('Delivery Fees', style: TextStyle(fontSize: 13))
                       ]),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                  ),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("RM ${double.parse(widget.tool.toolDelivery.toString()).toStringAsFixed(2)}",style: const TextStyle(fontSize: 20.0)),
+                        Text(
+                            "RM ${double.parse(widget.tool.toolDelivery.toString()).toStringAsFixed(2)}",
+                            style: const TextStyle(fontSize: 13)),
                       ]),
                 ]),
                 TableRow(children: [
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Text('Quantity', style: TextStyle(fontSize: 20.0))
+                        Text('Quantity', style: TextStyle(fontSize: 13))
                       ]),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                  ),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.tool.toolQty.toString(),style: const TextStyle(fontSize: 20.0)),
+                        Text(widget.tool.toolQty.toString(),
+                            style: const TextStyle(fontSize: 13)),
                       ]),
                 ]),
                 TableRow(children: [
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Text('Locality', style: TextStyle(fontSize: 20.0))
+                        Text('Locality', style: TextStyle(fontSize: 13))
                       ]),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                  ),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${widget.tool.toolLocal}",style: const TextStyle(fontSize: 20.0)),
+                        Text("${widget.tool.toolLocal}",
+                            style: const TextStyle(fontSize: 13)),
                       ]),
                 ]),
                 TableRow(children: [
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Text('Renter Name', style: TextStyle(fontSize: 20.0))
+                        Text('Renter Name', style: TextStyle(fontSize: 13))
                       ]),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                  ),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("${widget.renter.name}",
-                            style: const TextStyle(fontSize: 20.0))
+                            style: const TextStyle(fontSize: 13))
                       ]),
                 ]),
               ],
             ),
           ),
-          
-          const SizedBox(height: 16),
+          const SizedBox(height: 40),
+          ElevatedButton(
+              style: ButtonStyle(
+                fixedSize: MaterialStateProperty.all(Size(resWidth / 2, 50)),
+              ),
+              onPressed: _rentPayment,
+              child: const Text(
+                'Reserve Tool',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              )),
+          const SizedBox(height: 25),
           Expanded(
               child: Align(
             alignment: FractionalOffset.bottomCenter,
@@ -164,6 +201,10 @@ class _renteeToolDetailsState extends State<RenteeToolDetails> {
                     iconSize: 35,
                     onPressed: _makePhoneCall,
                     icon: const Icon(Icons.call)),
+                IconButton(
+                    iconSize: 35,
+                    onPressed: _whatsApp,
+                    icon: const Icon(Icons.whatsapp)),
                 IconButton(
                     iconSize: 35,
                     onPressed: _makeSmS,
@@ -179,17 +220,6 @@ class _renteeToolDetailsState extends State<RenteeToolDetails> {
               ],
             ))),
           )),
-
-          MaterialButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5)),
-              minWidth: resWidth,
-              height: 50,
-              child: const Text('Reserve Tool'),
-              elevation: 10,
-              color: Colors.blue,
-              onPressed: _rentPayment),
-                        const SizedBox(height: 25),
         ],
       ),
     );
@@ -214,12 +244,14 @@ class _renteeToolDetailsState extends State<RenteeToolDetails> {
   Future<void> _onRoute() async {
     final Uri launchUri = Uri(
         scheme: 'https',
-        // ignore: prefer_interpolation_to_compose_strings
-        path: "www.google.com/maps/@" +
-            widget.tool.toolLat.toString() +
-            "," +
-            widget.tool.toolLng.toString() +
-            "20z");
+        path:
+            "www.google.com/maps/@${widget.tool.toolLat},${widget.tool.toolLng}20z");
+    await launchUrl(launchUri);
+  }
+
+  Future<void> _whatsApp() async {
+    final Uri launchUri =
+        Uri(scheme: 'https', path: "wa.me/+6${widget.renter.phone}");
     await launchUrl(launchUri);
   }
 
@@ -293,15 +325,15 @@ class _renteeToolDetailsState extends State<RenteeToolDetails> {
   }
 
   void _rentPayment() async {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => RentPayment(
-        user: widget.user,
-        tool: widget.tool,
-        renter: widget.renter,
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RentPayment(
+          user: widget.user,
+          tool: widget.tool,
+          renter: widget.renter,
+        ),
       ),
-    ),
-  );
+    );
   }
 }

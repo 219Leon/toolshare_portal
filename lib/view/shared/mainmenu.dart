@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toolshare_portal/view/screens/HomeScreen.dart';
+import 'package:toolshare_portal/view/screens/ReceiptScreen.dart';
 import '../../models/user.dart';
 import '../../models/tools.dart';
 import 'EnterExitRoute.dart';
@@ -10,6 +11,8 @@ class MainMenuWidget extends StatefulWidget {
   final User user;
   final Tool tool;
   const MainMenuWidget({super.key, required this.user, required this.tool});
+  
+  get transaction => null;
 
   @override
   State<MainMenuWidget> createState() => _MainMenuWidgetState();
@@ -107,6 +110,7 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                           selectedIndex: 3,
                         )));
               }),
+          
         ],
       ),
     );

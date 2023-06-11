@@ -7,9 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:toolshare_portal/view/screens/LoginScreen.dart';
 import '../../config.dart';
 
-class RegisterAccountScreen extends StatefulWidget{
+class RegisterAccountScreen extends StatefulWidget {
   const RegisterAccountScreen({super.key});
-  
+
   @override
   State<StatefulWidget> createState() => _RegisterAccountState();
 }
@@ -40,160 +40,149 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Stack(
-        children: [
-          upperHalf(context),
-          lowerHalf(context)
-        ],
+        children: [upperHalf(context), lowerHalf(context)],
       ),
     );
   }
 
-  Widget upperHalf(BuildContext context){
+  Widget upperHalf(BuildContext context) {
     return SizedBox(
       height: screenHeight / 2,
       width: screenWidth,
-      child: Image.asset('assets/images/LoginScreen.png', 
-      fit: BoxFit.cover,),
+      child: Image.asset(
+        'assets/images/LoginScreen.png',
+        fit: BoxFit.cover,
+      ),
     );
   }
 
-  Widget lowerHalf(BuildContext context){
+  Widget lowerHalf(BuildContext context) {
     return Container(
-      height:600,
-      margin: EdgeInsets.only(top: screenHeight /5),
-      padding: const EdgeInsets.only(left:10, right:10),
+      height: 600,
+      margin: EdgeInsets.only(top: screenHeight / 5),
+      padding: const EdgeInsets.only(left: 10, right: 10),
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Card(
-              elevation: 10,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                  children: <Widget>[
-                    const SizedBox(height:10),
-                    const Text(
-                      "Register New Account",
-                        style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                      ),
+          child: Column(
+        children: [
+          Card(
+            elevation: 10,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
+              child: Form(
+                key: _formKey,
+                child: Column(children: <Widget>[
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Register New Account",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
                     ),
-                    const SizedBox(height: 15),
-                    TextFormField(
+                  ),
+                  const SizedBox(height: 15),
+                  TextFormField(
                       textInputAction: TextInputAction.next,
-                      validator: (val) => val!.isEmpty || val.length<3
-                      ? "Please enter a valid username!"
-                      : null,
+                      validator: (val) => val!.isEmpty || val.length < 3
+                          ? "Please enter a valid username!"
+                          : null,
                       controller: _nameEditingController,
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
-                      labelText: 'Username',
-                      labelStyle: TextStyle(
-                      ),
-                      icon: Icon(Icons.person_outline),
-                      focusedBorder: OutlineInputBorder(
-                            borderSide:BorderSide( width: 2.0),
-                    ))),
-                    TextFormField(
+                          labelText: 'Username',
+                          labelStyle: TextStyle(),
+                          icon: Icon(Icons.person_outline),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(width: 2.0),
+                          ))),
+                  TextFormField(
                       textInputAction: TextInputAction.next,
                       validator: (val) => val!.isEmpty ||
                               !val.contains("@") ||
                               !val.contains(".")
-                              ? "Please enter a valid email!"
-                              : null,
+                          ? "Please enter a valid email!"
+                          : null,
                       controller: _emailEditingController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(
-                      ),
-                      icon: Icon(Icons.email_outlined),
-                      focusedBorder: OutlineInputBorder(
-                            borderSide:BorderSide( width: 2.0),
-                    ))),
-                    TextFormField(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(),
+                          icon: Icon(Icons.email_outlined),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(width: 2.0),
+                          ))),
+                  TextFormField(
                       textInputAction: TextInputAction.next,
-                      validator: (val) => val!.isEmpty||val.length<10
-                      ?"Please enter a valid phone number!"
-                      :null,
+                      validator: (val) => val!.isEmpty || val.length < 10
+                          ? "Please enter a valid phone number!"
+                          : null,
                       controller: _phoneEditingController,
                       keyboardType: TextInputType.phone,
                       decoration: const InputDecoration(
-                      labelText: 'Phone Number',
-                      labelStyle: TextStyle(
-                      ),
-                      icon: Icon(Icons.phone_outlined),
-                      focusedBorder: OutlineInputBorder(
-                            borderSide:BorderSide( width: 2.0),
-                    ))),
-                    TextFormField(
+                          labelText: 'Phone Number',
+                          labelStyle: TextStyle(),
+                          icon: Icon(Icons.phone_outlined),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(width: 2.0),
+                          ))),
+                  TextFormField(
                       textInputAction: TextInputAction.next,
                       validator: (val) => validatePassword(val.toString()),
                       controller: _passEditingController,
                       keyboardType: TextInputType.visiblePassword,
                       decoration: const InputDecoration(
-                      labelText: 'Password',
-                      labelStyle: TextStyle(
-                      ),
-                      icon: Icon(Icons.lock_outline),
-                      focusedBorder: OutlineInputBorder(
-                            borderSide:BorderSide( width: 2.0),
-                    )),
-                    obscureText: true),
-                    TextFormField(
+                          labelText: 'Password',
+                          labelStyle: TextStyle(),
+                          icon: Icon(Icons.lock_outline),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(width: 2.0),
+                          )),
+                      obscureText: true),
+                  TextFormField(
                       textInputAction: TextInputAction.done,
                       validator: (val) => validatePassword(val.toString()),
                       controller: _pass2EditingController,
                       keyboardType: TextInputType.visiblePassword,
                       decoration: const InputDecoration(
-                      labelText: 'Re-enter Password',
-                      labelStyle: TextStyle(
-                      ),
-                      icon: Icon(Icons.lock_outline),
-                      focusedBorder: OutlineInputBorder(
-                            borderSide:BorderSide( width: 2.0),
-                    )),
-                    obscureText: true),
-                  const SizedBox(
-                    height: 15),
+                          labelText: 'Re-enter Password',
+                          labelStyle: TextStyle(),
+                          icon: Icon(Icons.lock_outline),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(width: 2.0),
+                          )),
+                      obscureText: true),
+                  const SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Checkbox(
-                        value: _isChecked, 
-                        onChanged: (bool? value){
-                          setState(() {
-                            _isChecked = value!;
-                          });
-                        }),
+                          value: _isChecked,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _isChecked = value!;
+                            });
+                          }),
                       Flexible(
-                        child: GestureDetector(
-                          onTap: showEula,
-                          child: const Text("I agree with the terms stated",
+                          child: GestureDetector(
+                        onTap: showEula,
+                        child: const Text(
+                          "I agree with the terms stated",
                           style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                          ),),
-                        )),
-                      MaterialButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)),
-                        minWidth: 115,
-                        height: 50,
-                        child: const Text('Register'),
-                        elevation: 10,
-                        color: Colors.blue,
-                        onPressed: _registerAccountDialog
-                        ),    
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      )),
+                      ElevatedButton(
+                          style: ButtonStyle(
+                            fixedSize: MaterialStateProperty.all(
+                                const Size.fromHeight(50)),
+                          ),
+                          onPressed: _registerAccountDialog,
+                          child: const Text('Register')),
                     ],
-                  ),  
+                  ),
                 ]),
-                ),
               ),
             ),
+          ),
           const SizedBox(
             height: 10,
           ),
@@ -201,20 +190,24 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text("Already registered?",
-              style: TextStyle(fontSize: 15.0, )),
+                  style: TextStyle(
+                    fontSize: 15.0,
+                  )),
               GestureDetector(
                 onTap: () => {
-                      Navigator.push(context, 
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => 
-                          const LoginScreen()))
-                    },
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const LoginScreen()))
+                },
                 child: const Text(" Login now!",
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)),
+                    style:
+                        TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)),
               )
             ],
           ),
-          ],
+        ],
       )),
     );
   }
@@ -232,7 +225,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
       }
     }
   }
-  
+
   void _registerAccountDialog() {
     String _name = _nameEditingController.text;
     String _email = _emailEditingController.text;
@@ -242,7 +235,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
 
     if (!_formKey.currentState!.validate()) {
       Fluttertoast.showToast(
-          msg: "Incomplee registration credentials",
+          msg: "Incomplete registration credentials",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -357,13 +350,15 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
 
   void _registerUser(String name, String email, String phone, String pass) {
     try {
-      http.post(Uri.parse("${Config.SERVER}/toolshare_portal/php/register_user.php"), body: {
-        "name": name,
-        "email": email,
-        "phone": phone,
-        "password": pass,
-        "register": "register"
-      }).then((response) {
+      http.post(
+          Uri.parse("${Config.SERVER}/toolshare_portal/php/register_user.php"),
+          body: {
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "password": pass,
+            "register": "register"
+          }).then((response) {
         var data = jsonDecode(response.body);
         if (response.statusCode == 200 && data['status'] == "success") {
           Fluttertoast.showToast(
@@ -372,7 +367,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
-          print("Register success");  
+          print("Register success");
           return;
         } else {
           Fluttertoast.showToast(
@@ -381,7 +376,7 @@ class _RegisterAccountState extends State<RegisterAccountScreen> {
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
-          print("Register failed"); 
+          print("Register failed");
           return;
         }
       });

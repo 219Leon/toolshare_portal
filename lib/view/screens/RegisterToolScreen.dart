@@ -341,9 +341,9 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
       GestureDetector(
         onTap: _onCamera,
         child: Column(
-          children: [
+          children: const [
             Icon(Icons.camera_alt, size: 64),
-            const Text(
+            Text(
               "Camera",
               style: TextStyle(),
             ),
