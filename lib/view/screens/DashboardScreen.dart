@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:toolshare_portal/models/tools.dart';
+import 'package:toolshare_portal/view/screens/ReservationList.dart';
 import 'package:toolshare_portal/view/screens/ToolList.dart';
 import 'package:toolshare_portal/view/screens/MarketplaceScreen.dart';
 import 'package:toolshare_portal/view/shared/EnterExitRoute.dart';
@@ -70,25 +71,58 @@ class _dashboardScreenState extends State<DashboardScreen> {
     return Center(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("User Dashboard"),
+          title: Text("Welcome back, ${widget.user.name.toString()}"),
         ),
         body: SingleChildScrollView(
           child: Column(
             children: [
+              //const SizedBox(height: 20),
+              Container(
+                height: 100,
+                width: screenWidth,
+                color: const Color(0xFF115FF6),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        style:  ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),
+                        onPressed:  () => {_loadTransaction()}, 
+                        child: const Text('Renter’s tools',
+                          style: TextStyle(
+                            color: Color(0xFF115FF6)
+                          ),)),
+                      GestureDetector(
+                        onTap: () => {_loadTransaction()},
+                        child: const Text(
+                          "Transaction History >",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              const Text(
+                'Highlights',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(
                 height: 10,
               ),
-              const Text("Welcome back,",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              Text(widget.user.name.toString(),
-                  style:
-                      const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 30),
               CarouselSlider(
                 options: CarouselOptions(
                   enlargeCenterPage: true,
-                  enableInfiniteScroll: true,
-                  autoPlay: true,
+                  enableInfiniteScroll: false,
+                  autoPlay: false,
                 ),
                 items: imageList
                     .map((e) => ClipRRect(
@@ -104,7 +138,7 @@ class _dashboardScreenState extends State<DashboardScreen> {
                     .toList(),
               ),
               const SizedBox(
-                height: 20,
+                height: 30,
               ),
               const Text(
                 'Featured Tools',
@@ -141,6 +175,14 @@ class _dashboardScreenState extends State<DashboardScreen> {
         ),
         drawer: MainMenuWidget(user: widget.user, tool: widget.tool),
       ),
+    );
+  }
+
+  void _loadTransaction() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => ReservationList(user: widget.user)),
     );
   }
 }

@@ -128,135 +128,111 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(width: 2.0),
                             ))),
-                    Row(
-                      children: [
-                        Flexible(
-                          flex: 5,
-                          child: TextFormField(
-                              textInputAction: TextInputAction.next,
-                              controller: _topriceEditingController,
-                              validator: (value) => value!.isEmpty
-                                  ? "Tool rent price must contain a value"
-                                  : null,
-                              keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
-                                  labelText: 'Tool Rental Price',
-                                  labelStyle: TextStyle(),
-                                  icon: Icon(Icons.money),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(width: 2.0),
-                                  ))),
-                        ),
-                        Flexible(
-                          flex: 5,
-                          child: TextFormField(
-                              textInputAction: TextInputAction.next,
-                              controller: _toqtyEditingController,
-                              validator: (value) => value!.isEmpty
-                                  ? "Quantity should be at least 1"
-                                  : null,
-                              keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
-                                  labelText: 'Tool Quantity',
-                                  labelStyle: TextStyle(),
-                                  icon: Icon(Icons.ad_units),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(width: 2.0),
-                                  ))),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Flexible(
-                          flex: 5,
-                          child: TextFormField(
-                              textInputAction: TextInputAction.next,
-                              controller: _tostateEditingController,
-                              validator: (value) =>
-                                  value!.isEmpty || (value.length < 3)
-                                      ? "Current State"
-                                      : null,
-                              keyboardType: TextInputType.text,
-                              decoration: const InputDecoration(
-                                  labelText: 'Current State',
-                                  labelStyle: TextStyle(),
-                                  icon: Icon(Icons.flag),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(width: 2.0),
-                                  ))),
-                        ),
-                        Flexible(
-                          flex: 5,
-                          child: TextFormField(
-                              textInputAction: TextInputAction.next,
-                              controller: _tolocalEditingController,
-                              validator: (value) =>
-                                  value!.isEmpty || (value.length < 10)
-                                      ? "Current Address"
-                                      : null,
-                              keyboardType: TextInputType.text,
-                              decoration: const InputDecoration(
-                                  labelText: 'Current Address',
-                                  labelStyle: TextStyle(),
-                                  icon: Icon(Icons.map),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(width: 2.0),
-                                  ))),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Flexible(
-                          flex: 5,
-                          child: TextFormField(
-                              textInputAction: TextInputAction.next,
-                              controller: _todelEditingController,
-                              validator: (value) =>
-                                  value!.isEmpty ? "Must contain value" : null,
-                              keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
-                                  labelText: 'Delivery Fees (Optional)',
-                                  labelStyle: TextStyle(),
-                                  icon: Icon(Icons.delivery_dining),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(width: 2.0),
-                                  ))),
-                        ),
-                        Flexible(
-                            flex: 5,
-                            child: CheckboxListTile(
-                                title: const Text(
-                                    "I hereby declare that my tool stated is lawful item and in good condition"),
-                                value: _isChecked,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    _isChecked = value!;
-                                  });
-                                })),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 200,
-                      child: ElevatedButton(
-                        child: const Text("Add tool"),
-                        onPressed: (() => {
-                              _newToolDialog(),
-                            }),
-                      ),
-                    )
+                    TextFormField(
+                        textInputAction: TextInputAction.next,
+                        controller: _topriceEditingController,
+                        validator: (value) => value!.isEmpty
+                            ? "Tool rent price must contain a value. For shared tools, it should be RM0.00"
+                            : null,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                            labelText: 'Tool Rental Price',
+                            labelStyle: TextStyle(),
+                            icon: Icon(Icons.money),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 2.0),
+                            ))),
+                    TextFormField(
+                        textInputAction: TextInputAction.next,
+                        controller: _toqtyEditingController,
+                        validator: (value) => value!.isEmpty
+                            ? "Quantity should be at least 1"
+                            : null,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                            labelText: 'Tool Quantity',
+                            labelStyle: TextStyle(),
+                            icon: Icon(Icons.ad_units),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 2.0),
+                            ))),
+                    TextFormField(
+                        textInputAction: TextInputAction.next,
+                        controller: _tostateEditingController,
+                        validator: (value) =>
+                            value!.isEmpty || (value.length < 3)
+                                ? "Current State"
+                                : null,
+                        keyboardType: TextInputType.text,
+                        decoration: const InputDecoration(
+                            labelText: 'Current State',
+                            labelStyle: TextStyle(),
+                            icon: Icon(Icons.flag),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 2.0),
+                            ))),
+                    TextFormField(
+                        textInputAction: TextInputAction.next,
+                        controller: _tolocalEditingController,
+                        validator: (value) =>
+                            value!.isEmpty || (value.length < 10)
+                                ? "Current Address"
+                                : null,
+                        keyboardType: TextInputType.text,
+                        decoration: const InputDecoration(
+                            labelText: 'Current Address',
+                            labelStyle: TextStyle(),
+                            icon: Icon(Icons.map),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 2.0),
+                            ))),
+                    TextFormField(
+                        textInputAction: TextInputAction.next,
+                        controller: _todelEditingController,
+                        validator: (value) =>
+                            value!.isEmpty ? "Must contain value" : null,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                            labelText: 'Delivery Fees (Optional)',
+                            labelStyle: TextStyle(),
+                            icon: Icon(Icons.delivery_dining),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 2.0),
+                            ))),
+                    CheckboxListTile(
+                        title: const Text(
+                            "I hereby declare that my tool stated is lawful item and in good condition"),
+                        value: _isChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _isChecked = value!;
+                          });
+                        }),
                   ],
                 )),
           ),
         ],
       )),
-      drawer: MainMenuWidget(
-        user: widget.user,
-        tool: widget.tool,
-      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 15),
+          ],
+        ),
+
+          child: ElevatedButton(
+            style: ButtonStyle(
+              fixedSize: MaterialStateProperty.all(const Size(60, 25)),
+            ),
+            child: const Text("Add tool"),
+            onPressed: (() => {
+                  _newToolDialog(),
+                }),
+          ),
+        ),
+  
     );
-    
   }
 
   void _newToolDialog() {
@@ -330,41 +306,41 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return Center(
-          child: AlertDialog(
+            child: AlertDialog(
           title: const Text(
             "Select picture from:",
             style: TextStyle(),
           ),
- content: Wrap(
-    alignment: WrapAlignment.spaceAround,
-    children: [
-      GestureDetector(
-        onTap: _onCamera,
-        child: Column(
-          children: const [
-            Icon(Icons.camera_alt, size: 64),
-            Text(
-              "Camera",
-              style: TextStyle(),
-            ),
-          ],
-        ),
-      ),
-      GestureDetector(
-        onTap: _onGallery,
-        child: Column(
-          children: [
-            Icon(Icons.image, size: 64),
-            const Text(
-              "Gallery",
-              style: TextStyle(),
-            ),
-          ],
-        ),
-      ),
-    ],
-  ),
-));
+          content: Wrap(
+            alignment: WrapAlignment.spaceAround,
+            children: [
+              GestureDetector(
+                onTap: _onCamera,
+                child: Column(
+                  children: const [
+                    Icon(Icons.camera_alt, size: 64),
+                    Text(
+                      "Camera",
+                      style: TextStyle(),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: _onGallery,
+                child: Column(
+                  children: [
+                    Icon(Icons.image, size: 64),
+                    const Text(
+                      "Gallery",
+                      style: TextStyle(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ));
       },
     );
   }
@@ -485,21 +461,19 @@ class _RegisterToolScreenState extends State<RegisterToolScreen> {
     String local = _tolocalEditingController.text;
     String base64Image = base64Encode(_image!.readAsBytesSync());
 
-    http.post(
-        Uri.parse("${Config.SERVER}/php/insert_tool.php"),
-        body: {
-          'userid': widget.user.id,
-          'toname': toname,
-          'todesc': todesc,
-          'toprice': toprice,
-          'delivery': delivery,
-          'qty': qty,
-          'state': state,
-          'local': local,
-          'lat': _lat,
-          'lng': _lng,
-          'image': base64Image
-        }).then((response) {
+    http.post(Uri.parse("${Config.SERVER}/php/insert_tool.php"), body: {
+      'userid': widget.user.id,
+      'toname': toname,
+      'todesc': todesc,
+      'toprice': toprice,
+      'delivery': delivery,
+      'qty': qty,
+      'state': state,
+      'local': local,
+      'lat': _lat,
+      'lng': _lng,
+      'image': base64Image
+    }).then((response) {
       print(response.body);
       var data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['status'] == "success") {

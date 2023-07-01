@@ -1,6 +1,7 @@
 class Transaction {
   String? transactionId;
   String? toolId;
+  String? toolName;
   String? userId;
   String? startDate;
   String? endDate;
@@ -10,6 +11,7 @@ class Transaction {
   Transaction({
     required this.transactionId,
     required this.toolId,
+    required this.toolName,
     required this.userId,
     required this.startDate,
     required this.endDate,

@@ -67,99 +67,103 @@ class _ToolListState extends State<ToolList> {
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
-          appBar: AppBar(
-            title: const Text("Tool List"),
-          ),
-          body: toolList.isEmpty
-              ? Center(
-                  child: Text(
-                    titlecenter,
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                )
-              : Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(
-                          "Current tools available (${toolList.length} found)",
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
+            appBar: AppBar(
+              title: const Text("Tool List"),
+            ),
+            body: RefreshIndicator(
+              onRefresh: () => _loadTools(),
+              child: toolList.isEmpty
+                  ? Center(
+                      child: Text(
+                        titlecenter,
+                        style: const TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold),
                       ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Expanded(
-                          child: GridView.count(
-                        crossAxisCount: rowcount,
-                        children: List.generate(toolList.length, (index) {
-                          print(toolList);
-                          return Card(
-                            elevation: 8,
-                            child: InkWell(
-                              onTap: () {
-                                _showDetails(index);
-                              },
-                              onLongPress: () {
-                                _deleteDialog(index);
-                              },
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Flexible(
-                                      flex: 7,
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            "${Config.SERVER}/assets/toolimages/${toolList[index].toolId}.png",
-                                        placeholder: (context, url) =>
-                                            const LinearProgressIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(Icons.error),
-                                      )),
-                                  Flexible(
-                                      flex: 7,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              truncateString(
-                                                  toolList[index]
-                                                      .toolName
-                                                      .toString(),
-                                                  15),
-                                              style: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                                "RM ${double.parse(toolList[index].toolRentPrice.toString()).toStringAsFixed(2)} per hour"),
-                                            Text(df.format(DateTime.parse(
-                                                toolList[index]
-                                                    .toolDate
-                                                    .toString())), style:const TextStyle(fontSize: 10),)
-                                          ],
-                                        ),
-                                      ))
-                                ],
-                              ),
+                    )
+                  : Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              "Current tools available (${toolList.length} found)",
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
-                          );
-                        }),
-                      ))
-                    ],
-                  ),
-          drawer: MainMenuWidget(user: widget.user, tool: widget.tool),
-          floatingActionButton: FloatingActionButton(
-            onPressed: _gotoNewTool,
-            tooltip: 'Add new tool',
-            child: const Icon(Icons.add_rounded),
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          Expanded(
+                              child: GridView.count(
+                            crossAxisCount: rowcount,
+                            children: List.generate(toolList.length, (index) {
+                              print(toolList);
+                              return Card(
+                                elevation: 8,
+                                child: InkWell(
+                                  onTap: () {
+                                    _showDetails(index);
+                                  },
+                                  onLongPress: () {
+                                    _deleteDialog(index);
+                                  },
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Flexible(
+                                          flex: 7,
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                "${Config.SERVER}/assets/toolimages/${toolList[index].toolId}.png",
+                                            placeholder: (context, url) =>
+                                                const LinearProgressIndicator(),
+                                            errorWidget: (context, url, error) =>
+                                                const Icon(Icons.error),
+                                          )),
+                                      Flexible(
+                                          flex: 7,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  truncateString(
+                                                      toolList[index]
+                                                          .toolName
+                                                          .toString(),
+                                                      15),
+                                                  style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                                Text(
+                                                    "RM ${double.parse(toolList[index].toolRentPrice.toString()).toStringAsFixed(2)} per hour"),
+                                                Text(df.format(DateTime.parse(
+                                                    toolList[index]
+                                                        .toolDate
+                                                        .toString())), style:const TextStyle(fontSize: 10),)
+                                              ],
+                                            ),
+                                          ))
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                          ))
+                        ],
+                      ),
+            ),
+            drawer: MainMenuWidget(user: widget.user, tool: widget.tool),
+            floatingActionButton: FloatingActionButton(
+              onPressed: _gotoNewTool,
+              tooltip: 'Add new tool',
+              child: const Icon(Icons.add_rounded),
+            ),
           ),
-        ));
+        );
   }
 
   String truncateString(String str, int size) {
@@ -247,7 +251,7 @@ class _ToolListState extends State<ToolList> {
     return true;
   }
 
-  void _loadTools() {
+  Future<void> _loadTools() async{
     
   http.get(
     Uri.parse("${Config.SERVER}/php/loadrentertools.php?userid=${widget.user.id}"),

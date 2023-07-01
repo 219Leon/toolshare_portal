@@ -81,6 +81,23 @@ class _renteeToolDetailsState extends State<RenteeToolDetails> {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
+                        Text('Tool ID', style: TextStyle(fontSize: 13))
+                      ]),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                  ),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            "T-${widget.tool.toolId.toString().padLeft(5, '0')}",
+                            style: const TextStyle(fontSize: 13)),
+                      ]),
+                ]),
+                TableRow(children: [
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
                         Text('Description', style: TextStyle(fontSize: 13))
                       ]),
                   Column(

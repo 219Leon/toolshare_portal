@@ -27,8 +27,8 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
       child: ListView(
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text(widget.user.email.toString()),
-            accountEmail: Text(widget.user.name.toString()),
+            accountName: Text(widget.user.name.toString()),
+            accountEmail: Text("User ID: U-${widget.user.id.toString().padLeft(5, '0')}"),
             currentAccountPicture: CircleAvatar(
               radius: 30.0,
               backgroundImage: CachedNetworkImageProvider(

@@ -34,10 +34,10 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
   int rowcount = 1;
   TextEditingController searchController = TextEditingController();
   String search = "all";
-  var renter;
-  var color;
+  var renter, color;
   var numofpage, curpage = 1;
   int numberofresult = 0;
+  var selectedRange = RangeValues(0.00, 20.00);
 
   @override
   void initState() {
@@ -79,99 +79,145 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
             )
           ],
         ),
-        body: toolList.isEmpty
-            ? Center(
-                child: Text(titlecenter,
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold)))
-            : Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(
-                      "Available Tool(s) ($numberofresult found)",
+        body: RefreshIndicator(
+          onRefresh: (() => _loadTools("all", 1)),
+          child: toolList.isEmpty
+              ? Center(
+                  child: Text(titlecenter,
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                          fontSize: 22, fontWeight: FontWeight.bold)))
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        "Available Tool(s): ($numberofresult found)",
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 4,
-                  ),
-                  Expanded(
-                      child: GridView.count(
-                    crossAxisCount: rowcount,
-                    children: List.generate(toolList.length, (index) {
-                      return Card(
-                        elevation: 8,
-                        child: InkWell(
-                            onTap: () {
-                              _showDetails(index);
-                            },
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                Flexible(
-                                  flex: 7,
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                        "${Config.SERVER}/assets/toolimages/${toolList[index].toolId}.png",
-                                    placeholder: (context, url) =>
-                                        const LinearProgressIndicator(),
-                                    errorWidget: (context, url, error) {
-                                      return const Icon(Icons.error);
-                                    },
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Expanded(
+                        child: GridView.count(
+                      crossAxisCount: rowcount,
+                      children: List.generate(toolList.length, (index) {
+                        return Card(
+                          elevation: 8,
+                          child: InkWell(
+                              onTap: () {
+                                _showDetails(index);
+                              },
+                              child: Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 8,
                                   ),
-                                ),
-                                Flexible(
+                                  Flexible(
                                     flex: 7,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                              truncateString(
-                                                  toolList[index]
-                                                      .toolName
-                                                      .toString(),
-                                                  15),
-                                              style: const TextStyle(
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          "${Config.SERVER}/assets/toolimages/${toolList[index].toolId}.png",
+                                      placeholder: (context, url) =>
+                                          const LinearProgressIndicator(),
+                                      errorWidget: (context, url, error) {
+                                        return const Icon(Icons.error);
+                                      },
+                                    ),
+                                  ),
+                                  Flexible(
+                                      flex: 7,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                                truncateString(
+                                                    toolList[index]
+                                                        .toolName
+                                                        .toString(),
+                                                    15),
+                                                style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold)),
+                                            Text(toolList[index].toolRentPrice != 0
+                                                ? "RM ${double.parse(toolList[index].toolRentPrice.toString()).toStringAsFixed(2)} per hour"
+                                                : "Available for sharing"),
+                                            Text(
+                                              "Delivery Fees: RM ${double.parse(toolList[index].toolDelivery.toString()).toStringAsFixed(2)} ",
+                                              style:
+                                                  const TextStyle(fontSize: 11),
+                                            ),
+                                            Text(
+                                                toolList[index].toolRentPrice == 0.0
+                                                    ? "For Sharing"
+                                                    : "For Rent",
+                                                style: TextStyle(
                                                   fontSize: 16,
-                                                  fontWeight: FontWeight.bold)),
-                                          Text(
-                                              "RM ${double.parse(toolList[index].toolRentPrice.toString()).toStringAsFixed(2)} per hour"),
-                                          Text("Delivery Fees: RM ${double.parse(toolList[index].toolDelivery.toString()).toStringAsFixed(2)} ", style: const TextStyle(fontSize: 11),)
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            )),
-                      );
-                    }),
-                  )),
-                  SizedBox(
-                    height: 50,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: numofpage,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          if ((curpage - 1) == index) {
-                            color = Colors.red;
-                          } else {
-                            color = Colors.black;
-                          }
-                          return TextButton(
-                              onPressed: () => {_loadTools(search, index + 1)},
-                              child: Text(
-                                (index + 1).toString(),
-                                style: TextStyle(color: color, fontSize: 18),
-                              ));
-                        }),
-                  ),
-                ],
-              ),
+                                                  fontWeight: FontWeight.bold,
+                                                  color: toolList[index]
+                                                              .toolRentPrice ==
+                                                          0
+                                                      ? Colors.green
+                                                      : Colors.red,
+                                                )),
+                                          ],
+                                        ),
+                                      )),
+                                ],
+                              )),
+                        );
+                      }),
+                    )),
+                    SizedBox(
+                      height: 50,
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: numofpage,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            if ((curpage - 1) == index) {
+                              color = Colors.blue;
+                            } else {
+                              color = Colors.black;
+                            }
+                            return TextButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible:
+                                        false, // Prevents dialog from closing on outside tap
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        content: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            CircularProgressIndicator(), // Loading indicator
+                                            SizedBox(width: 10),
+                                            Text(
+                                                "Loading page..."), // Optional text to display
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                  curpage = index + 1;
+                                  _loadTools(search, index + 1).then((_) {
+                                    Future.delayed(const Duration(seconds: 1), () {
+                                      Navigator.pop(context);
+                                    });
+                                  });
+                                },
+                                child: Text(
+                                  (index + 1).toString(),
+                                  style: TextStyle(color: color, fontSize: 18),
+                                ));
+                          }),
+                    ),
+                  ],
+                ),
+        ),
         drawer: MainMenuWidget(user: widget.user, tool: widget.tool),
       ),
     );
@@ -186,7 +232,7 @@ class _marketplaceScreenState extends State<MarketplaceScreen> {
     }
   }
 
-  void _loadTools(String search, int pageno) {
+  Future<void> _loadTools(String search, int pageno) async {
     setState(() {
       curpage = pageno;
       numofpage ??= 1;

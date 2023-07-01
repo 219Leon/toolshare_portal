@@ -292,14 +292,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     )));
       } else if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: "Login Failed. No response.",
+            msg: "Login Failed",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
       } else {
         Fluttertoast.showToast(
-            msg: "Login Failed",
+            msg: "Incorrect Username/Password",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
